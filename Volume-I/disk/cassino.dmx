@@ -1,0 +1,165 @@
+rem -- CASSINO
+
+screen 0
+width 40
+key off
+color 11, 1, 1
+semente_aleatoria = rnd(-time)
+for indice = 1 to semente_aleatoria
+    descarte_aleatorio = rnd(1)
+next
+
+rem -- Graficos internacionais: prefixo chr$(1), codigos 86 a 91.
+vertical$ = chr$(1) + chr$(86)
+horizontal$ = chr$(1) + chr$(87)
+canto_superior_esquerdo$ = chr$(1) + chr$(88)
+canto_superior_direito$ = chr$(1) + chr$(89)
+canto_inferior_esquerdo$ = chr$(1) + chr$(90)
+canto_inferior_direito$ = chr$(1) + chr$(91)
+linha_horizontal$ = ""
+for indice = 1 to 36
+    linha_horizontal$ = linha_horizontal$ + horizontal$
+next
+topo_rolo$ = canto_superior_esquerdo$
+base_rolo$ = canto_inferior_esquerdo$
+for indice = 1 to 5
+    topo_rolo$ = topo_rolo$ + horizontal$
+    base_rolo$ = base_rolo$ + horizontal$
+next
+topo_rolo$ = topo_rolo$ + canto_superior_direito$
+base_rolo$ = base_rolo$ + canto_inferior_direito$
+
+{abertura}
+    gosub {desenhar_moldura}
+    locate 8, 5
+    print "A sorte esta nos numeros!"
+    locate 4, 7
+    print "Escolha o saldo e faca sua aposta."
+    locate 4, 9
+    print "Tres iguais: ganhe 50 x a aposta."
+    locate 4, 11
+    print "Tres setes: ganhe 500 x a aposta!"
+    locate 4, 13
+    print "Outros numeros: perde a aposta."
+    locate 4, 15
+    print "Aposte zero para sair do jogo."
+    locate 4, 18
+    print "Pressione uma tecla para comecar"
+    play "t180o5v10l8cego6c4", "t180o3v7l4cge2"
+    tecla$ = input$(1)
+    color 15, 1, 1
+    gosub {desenhar_moldura}
+    locate 4, 8
+    input "Quantia inicial :"; saldo
+
+{iniciar_rodada}
+    color 10, 1, 1
+    gosub {desenhar_moldura}
+    for indice = 1 to 3
+        coluna_rolo = 6 + (indice - 1) * 10
+        locate coluna_rolo, 7
+        print topo_rolo$;
+        locate coluna_rolo, 8
+        print vertical$; "     "; vertical$;
+        locate coluna_rolo, 9
+        print base_rolo$;
+    next indice
+
+    locate 4, 11
+    print "Saldo :"; saldo
+    locate 4, 18
+    print "Aposte zero para encerrar"
+    locate 4, 13
+    input "Sua aposta :"; aposta
+    if aposta = 0 or aposta > saldo then {encerrar}
+
+    color 11, 1, 1
+    locate 4, 16
+    print "Girando...";
+    coluna_rolo = 9
+    gosub {sortear_numero}
+    primeiro_numero = numero_sorteado
+    coluna_rolo = 19
+    gosub {sortear_numero}
+    segundo_numero = numero_sorteado
+    coluna_rolo = 29
+    gosub {sortear_numero}
+
+    if primeiro_numero = segundo_numero and primeiro_numero = numero_sorteado then {premiar_acerto}
+    resultado = -aposta
+    mensagem_resultado$ = "Nao foi desta vez. Tente de novo!"
+    color 8, 1, 1
+    play "t160o4v9l8gec4", "t160o3v6l4cr4"
+
+{mostrar_resultado}
+    saldo = saldo + resultado
+    locate 4, 13
+    print space$(32);
+    locate 4, 13
+    print "Aposta :"; aposta
+    locate 4, 14
+    print "Resultado :"; resultado
+    locate 4, 16
+    print mensagem_resultado$;
+    locate 4, 18
+    print space$(32);
+    locate 4, 18
+    print "Saldo atualizado :"; saldo
+    locate 4, 20
+    print "Pressione uma tecla"
+    tecla$ = input$(1)
+    goto {iniciar_rodada}
+
+{premiar_acerto}
+    resultado = aposta * 50
+    mensagem_resultado$ = "Tres iguais! Voce ganhou!"
+    color 3, 1, 1
+    if primeiro_numero = 7 then {premiar_setes}
+    play "t200o5v12l8cego6c4", "t200o4v8l4ceg2", "t200o3v6l4cgr2"
+    goto {mostrar_resultado}
+
+{premiar_setes}
+    resultado = aposta * 500
+    mensagem_resultado$ = "Sete, sete, sete! Premio maximo!"
+    color 10, 4, 4
+    play "t220o5v13l16cego6cego5c4", "t220o4v9l8cego5c4", "t220o3v8l8cgcg4"
+    goto {mostrar_resultado}
+
+{sortear_numero}
+    for passo_giro = 1 to 8
+        numero_sorteado = int(rnd(1) * 9 + 1)
+        locate coluna_rolo, 8
+        print chr$(48 + numero_sorteado);
+        play "t255o5v8l64c"
+    next passo_giro
+    play "t255o6v10l32g"
+    return
+
+{encerrar}
+    color 11, 1, 1
+    gosub {desenhar_moldura}
+    locate 8, 7
+    print "Obrigado por jogar!"
+    locate 4, 10
+    print "Voce tem :"; saldo
+    locate 8, 14
+    print "Ate a proxima rodada!"
+    play "t160o5v10l8gec4", "t160o3v7l4gc2"
+    key on
+    end
+
+{desenhar_moldura}
+    cls
+    locate 1, 1
+    print canto_superior_esquerdo$; linha_horizontal$; canto_superior_direito$;
+    for linha_tela = 2 to 21
+        locate 1, linha_tela
+        print vertical$;
+        locate 38, linha_tela
+        print vertical$;
+    next linha_tela
+    locate 1, 22
+    print canto_inferior_esquerdo$; linha_horizontal$; canto_inferior_direito$;
+    locate 14, 3
+    print "Cassino MSX";
+    return
