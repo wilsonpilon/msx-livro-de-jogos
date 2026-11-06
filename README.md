@@ -328,11 +328,9 @@ Este trabalho é uma iniciativa independente de preservação e modernização, 
 
 ---
 
-<div align="center">
-  <img src="images/Wilson-Hacker-Small.png" alt="Wilson Hacker" width="300px">
+![Wilson Hacker](./images/Wilson-Hacker-Small.png)
 
-  ## ⚠️ Manifesto do Repositório: Projetos Estritamente Pessoais ⚠️
-</div>
+## ⚠️ Manifesto do Repositório: Projetos Estritamente Pessoais ⚠️
 
 > *Se você tropeçou neste GitHub ou site, saiba que provavelmente foi por acidente, já que eu não faço a menor questão de divulgar o que construo por aqui.*
 
@@ -348,8 +346,6 @@ Este espaço é o meu **asilo digital**. Aqui você vai encontrar uma coleção 
 
 ---
 
-<div align="center">
-  <em>Resumindo: minha única intenção é curtir meus projetos em paz e no meu próprio ritmo.<br>Aproveite o código (ou não) e siga o seu rumo.</em> ✌️
-</div>
+> *Resumindo: minha única intenção é curtir meus projetos em paz e no meu próprio ritmo. Aproveite o código (ou não) e siga o seu rumo.* ✌️
 
 ---
