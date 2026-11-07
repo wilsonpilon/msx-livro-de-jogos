@@ -1,180 +1,192 @@
 10 'Converted with Basic Dignified
 20 'https://github.com/farique1/basic-dignified
 30 rem -- MSX JOGOS: VOLUME I
-40 dim zz$(15),zy$(15),zx$(15)
-50 screen 0
-60 width 40
-70 key off
-80 color 15,4,4
-90 cls
-100 locate 0,0,0
-110 restore 1540
-120 for zw=1 to 15
-130 read zz$(zw),zy$(zw),zx$(zw)
-140 next zw
-150 gosub 1340
-160 zv$=chr$(1)+chr$(86)
-170 zu$=chr$(1)+chr$(87)
-180 zt$=chr$(1)+chr$(88)
-190 zs$=chr$(1)+chr$(89)
-200 zr$=chr$(1)+chr$(90)
-210 zq$=chr$(1)+chr$(91)
-220 zp$=""
-230 for zw=1 to 36
-240 zp$=zp$+zu$
-250 next zw
-260 gosub 720
-270 zo=1
-280 for zw=1 to 15
-290 gosub 1090
-300 next zw
-310 gosub 1230
-320 zn$=inkey$
-330 if zn$="" then 320
-340 if zn$=chr$(27)then 660
-350 if zn$=chr$(13)then 540
-360 zm=zo
-370 if zn$=chr$(30)then zo=zo-1
-380 if zn$=chr$(31)then zo=zo+1
-390 if zm<=6 and zo<1 then zo=6
-400 if zm<=6 and zo>6 then zo=1
-410 if zm>6 and zo<7 then zo=15
-420 if zm>6 and zo>15 then zo=7
-430 if zn$=chr$(29)and zm>6 then zo=zm-6
-440 if zn$=chr$(29)and zo>6 then zo=6
-450 if zn$=chr$(28)and zm<=6 then zo=zm+6
-460 if zo=zm then 320
-470 zw=zm
-480 gosub 1090
-490 zw=zo
-500 gosub 1090
-510 gosub 1230
-520 play "t255o5v7l64c"
-530 goto 320
-540 zl$=zx$(zo)
-550 on error goto 570
-560 run zl$
-570 if err<>53 then on error goto 0
-580 locate 3,20
-590 print "Arquivo nao encontrado no disco.";
-600 beep
-610 zn$=input$(1)
-620 resume 630
-630 on error goto 0
-640 gosub 1230
-650 goto 320
-660 screen 0
-670 width 40
-680 color 15,1,1
-690 key off
-700 cls
-710 end
-720 locate 1,1
-730 print zt$;zp$;zs$;
-740 for zk=2 to 21
-750 locate 1,zk
-760 print zv$;
-770 locate 38,zk
-780 print zv$;
-790 next zk
-800 locate 1,22
-810 print zr$;zp$;zq$;
-820 locate 10,3
-830 print chr$(129);" M S X  J O G O S ";chr$(129);
-840 locate 5,4
-850 print "Volume I - Biblioteca de jogos";
-860 for zk=5 to 17 step 12
-870 gosub 1060
-880 next zk
-890 zk=7
-900 gosub 1060
-910 locate 20,7
-920 print chr$(1);chr$(92);
-930 locate 20,17
-940 print chr$(1);chr$(93);
-950 for zk=8 to 16
-960 locate 20,zk
-970 print zv$;
-980 next zk
-990 locate 3,6
-1000 print "Aprender / Criar";
-1010 locate 22,6
-1020 print "Profissionais";
-1030 locate 3,21
-1040 print "Setas: escolher  ENTER: jogar";
-1050 return
-1060 locate 1,zk
-1070 print chr$(1);chr$(94);zp$;chr$(1);chr$(95);
-1080 return
-1090 zj=3
-1100 zi=7+zw
-1110 if zw>6 then zj=22:zi=1+zw
-1120 zh$=left$(zy$(zw)+space$(16),16)
-1130 if zw<>zo then 1190
-1140 zg$=""
-1150 for zf=1 to 16
-1160 zg$=zg$+chr$(asc(mid$(zh$,zf,1))+128)
-1170 next zf
-1180 zh$=zg$
-1190 locate zj-1,zi
-1200 if zw=zo then print chr$(128);else print " ";
-1210 print zh$;
-1220 return
-1230 locate 3,18
-1240 print space$(34);
-1250 locate 3,18
-1260 print zz$(zo);
-1270 locate 3,19
-1280 print space$(34);
-1290 locate 3,19
-1300 print "Arquivo: ";zx$(zo);
-1310 locate 3,20
-1320 print "ENTER abre o jogo. ESC sai.        ";
-1330 return
-1340 ze=base(2)
-1350 restore 1690
-1360 for zd=22 to 31
-1370 for zc=0 to 7
-1380 read zb
-1390 vpoke ze+zd*8+zc,zb
-1400 next zc
-1410 next zd
-1420 for zd=128 to 129
-1430 for zc=0 to 7
-1440 read zb
-1450 vpoke ze+zd*8+zc,zb
-1460 next zc
-1470 next zd
-1480 rem -- SCREEN 0 usa seis pixels; a copia inversa ocupa os codigos 160-255.
-1490 za=ze+128*8
-1500 for yz=32*8 to 128*8-1
-1510 vpoke za+yz,vpeek(ze+yz)xor &hfc
-1520 next yz
+40 goto 490
+50 if am=1 then 330
+60 if am<>0 then error 5
+70 dim af$(255),qn$(10),qs$(10),qh$(5),qb$(7)
+80 for zz=0 to 255
+90 af$(zz)=chr$(zz)
+100 if zz<32 then af$(zz)=chr$(1)+chr$(zz+64)
+110 if zz=127 then af$(zz)=" "
+120 next zz
+130 restore 450
+140 for zy=0 to 10
+150 read zz
+160 qn$(zy)=af$(zz)
+170 next zy
+180 for zy=0 to 10
+190 read zz
+200 qs$(zy)=af$(zz)
+210 next zy
+220 for zy=0 to 5
+230 read zz
+240 qh$(zy)=af$(zz)
+250 next zy
+260 for zy=0 to 7
+270 read zz
+280 qb$(zy)=af$(zz)
+290 next zy
+300 mx$=af$(11)+af$(12)+af$(13)+af$(14)
+310 sg$=af$(6)+af$(7)+af$(8)+af$(9)
+320 return
+330 ar$=""
+340 if at$="" then return
+350 for zy=1 to len(at$)
+360 zz=asc(mid$(at$,zy,1))
+370 if zz=32 or zz=46 then 420
+380 if zz>=48 and zz<=63 then 420
+390 if zz>=65 and zz<=90 then 420
+400 if zz>=97 and zz<=122 then 420
+410 error 5
+420 ar$=ar$+chr$(zz+128)
+430 next zy
+440 return
+450 data 24,25,26,27,23,22,18,17,20,19,21
+460 data 152,153,154,155,151,150,161,145,162,163,149
+470 data 129,130,131,132,133,156
+480 data 24,1,3,5,23,4,22,2
+490 clear 4096
+500 dim zx$(15),zw$(15),aj$(15)
+510 screen 0
+520 width 40
+530 key off
+540 color 15,4,4
+550 cls
+560 locate 0,0,0
+570 bload "ALFABETO.BIN",s,base(2)
+580 am=0
+590 gosub 50
+600 restore 1780
+610 for zv=1 to 15
+620 read zx$(zv),zw$(zv),aj$(zv)
+630 next zv
+640 zu$=""
+650 zt$=""
+660 for zv=1 to 36
+670 zu$=zu$+qb$(4)
+680 zt$=zt$+qb$(5)
+690 next zv
+700 gosub 1170
+710 zs=1
+720 for zv=1 to 15
+730 gosub 1540
+740 next zv
+750 gosub 1670
+760 zr$=inkey$
+770 if zr$="" then 760
+780 if zr$=chr$(27)then 1110
+790 if zr$=chr$(13)then 980
+800 zq=zs
+810 if zr$=chr$(30)then zs=zs-1
+820 if zr$=chr$(31)then zs=zs+1
+830 if zq<=6 and zs<1 then zs=6
+840 if zq<=6 and zs>6 then zs=1
+850 if zq>6 and zs<7 then zs=15
+860 if zq>6 and zs>15 then zs=7
+870 if zr$=chr$(29)and zq>6 then zs=zq-6
+880 if zr$=chr$(29)and zs>6 then zs=6
+890 if zr$=chr$(28)and zq<=6 then zs=zq+6
+900 if zs=zq then 760
+910 zv=zq
+920 gosub 1540
+930 zv=zs
+940 gosub 1540
+950 gosub 1670
+960 play "t255o5v7l64c"
+970 goto 760
+980 fl$=aj$(zs)
+990 on error goto 1010
+1000 run fl$
+1010 if err<>53 then on error goto 0
+1020 locate 3,20
+1030 print "Arquivo nao encontrado no disco.";
+1040 beep
+1050 zr$=inkey$
+1060 if zr$="" then 1050
+1070 resume 1080
+1080 on error goto 0
+1090 gosub 1670
+1100 goto 760
+1110 screen 0
+1120 width 40
+1130 color 15,1,1
+1140 key off
+1150 cls
+1160 end
+1170 locate 1,1
+1180 print qb$(0);zu$;qb$(1);
+1190 for zp=2 to 21
+1200 locate 1,zp
+1210 print qb$(6);
+1220 locate 38,zp
+1230 print qb$(7);
+1240 next zp
+1250 locate 1,22
+1260 print qb$(2);zt$;qb$(3);
+1270 locate 12,3
+1280 print mx$;" J O G O S ";
+1290 locate 5,4
+1300 print "Volume I - Biblioteca de jogos";
+1310 for zp=5 to 17 step 12
+1320 gosub 1510
+1330 next zp
+1340 zp=7
+1350 gosub 1510
+1360 locate 20,7
+1370 print af$(18);
+1380 locate 20,17
+1390 print af$(17);
+1400 for zp=8 to 16
+1410 locate 20,zp
+1420 print qn$(5);
+1430 next zp
+1440 locate 3,6
+1450 print "Aprender / Criar";
+1460 locate 22,6
+1470 print "Profissionais";
+1480 locate 3,21
+1490 print "Setas: escolher  ENTER: jogar";
+1500 return
+1510 locate 2,zp
+1520 print zu$;
 1530 return
-1540 data "Cassino","Cassino","CASSINO.BMX"
-1550 data "Batalha naval","Batalha naval","BATALHA.BMX"
-1560 data "Gorks","Gorks","GORKS.BMX"
-1570 data "Vinte e um","Vinte e um","VINTEUM.BMX"
-1580 data "Roleta","Roleta","ROLETA.BMX"
-1590 data "O eletricista louco","Eletricista louco","ELETRIC.BMX"
-1600 data "Frogger","Frogger","FROGGER.BMX"
-1610 data "Tubarao!","Tubarao!","TUBARAO.BMX"
-1620 data "O jogo do cemiterio","Cemiterio","CEMITER.BMX"
-1630 data "Formula um","Formula um","FORMULA1.BMX"
-1640 data "Poker profissional","Poker profiss.","POKER.BMX"
-1650 data "Trem maluco","Trem maluco","TREM.BMX"
-1660 data "Caple","Caple","CAPLE.BMX"
-1670 data "Formula Interlagos","F. Interlagos","INTERLAG.BMX"
-1680 data "Labirinto tridimensional","Labirinto 3D","LABIR3D.BMX"
-1690 data &h48,&h48,&h48,&h48,&h48,&h48,&h48,&h48
-1700 data 0,0,&hfc,0,0,&hfc,0,0
-1710 data 0,0,&h7c,&h40,&h40,&h4c,&h48,&h48
-1720 data 0,0,&hf8,&h08,&h08,&hc8,&h48,&h48
-1730 data &h48,&h48,&h4c,&h40,&h40,&h7c,0,0
-1740 data &h48,&h48,&hc8,&h08,&h08,&hf8,0,0
-1750 data 0,0,&hfc,0,0,&hfc,&h48,&h48
-1760 data &h48,&h48,&hfc,&h48,&h48,&hfc,0,0
-1770 data &h48,&h48,&h7c,&h48,&h48,&h7c,&h48,&h48
-1780 data &h48,&h48,&hf8,&h48,&h48,&hf8,&h48,&h48
-1790 data 0,&h20,&h30,&hfc,&h30,&h20,0,0
-1800 data 0,&h30,&h78,&hfc,&h78,&h30,0,0
+1540 zo=3
+1550 zn=7+zv
+1560 if zv>6 then zo=22:zn=1+zv
+1570 zm$=left$(zw$(zv)+space$(16),16)
+1580 if zv<>zs then 1630
+1590 am=1
+1600 at$=zm$
+1610 gosub 50
+1620 zm$=ar$
+1630 locate zo-1,zn
+1640 if zv=zs then print af$(166);else print " ";
+1650 print zm$;
+1660 return
+1670 locate 3,18
+1680 print space$(34);
+1690 locate 3,18
+1700 print zx$(zs);
+1710 locate 3,19
+1720 print space$(34);
+1730 locate 3,19
+1740 print "Arquivo: ";aj$(zs);
+1750 locate 3,20
+1760 print "ENTER abre o jogo. ESC sai.        ";
+1770 return
+1780 data "Cassino","Cassino","CASSINO.BMX"
+1790 data "Batalha naval","Batalha naval","BATALHA.BMX"
+1800 data "Gorks","Gorks","GORKS.BMX"
+1810 data "Vinte e um","Vinte e um","VINTEUM.BMX"
+1820 data "Roleta","Roleta","ROLETA.BMX"
+1830 data "O eletricista louco","Eletricista louco","ELETRIC.BMX"
+1840 data "Frogger","Frogger","FROGGER.BMX"
+1850 data "Tubarao!","Tubarao","TUBARAO.BMX"
+1860 data "O jogo do cemiterio","Cemiterio","CEMITER.BMX"
+1870 data "Formula um","Formula um","FORMULA1.BMX"
+1880 data "Poker profissional","Poker profiss.","POKER.BMX"
+1890 data "Trem maluco","Trem maluco","TREM.BMX"
+1900 data "Caple","Caple","CAPLE.BMX"
+1910 data "Formula Interlagos","F. Interlagos","INTERLAG.BMX"
+1920 data "Labirinto tridimensional","Labirinto 3D","LABIR3D.BMX"

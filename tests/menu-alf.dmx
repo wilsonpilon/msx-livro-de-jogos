@@ -1,0 +1,70 @@
+goto {executar_testes}
+
+{mapa_menu}
+    include "..\include\menu-alf.dmx"
+
+{executar_testes}
+clear 2048
+screen 1
+width 32
+key off
+am = 0
+gosub {mapa_menu}
+cls
+locate 0, 0
+for codigo_teste = 0 to 31
+    print af$(codigo_teste);
+next codigo_teste
+locate 0, 2
+for indice_teste = 0 to 10
+    print qn$(indice_teste);
+next indice_teste
+locate 0, 3
+for indice_teste = 0 to 10
+    print qs$(indice_teste);
+next indice_teste
+locate 0, 4
+for indice_teste = 0 to 5
+    print qh$(indice_teste);
+next indice_teste
+locate 0, 5
+print mx$; sg$;
+locate 0, 6
+for codigo_teste = 32 to 255
+    print af$(codigo_teste);
+next codigo_teste
+codigo_teste = 0
+{testar_caractere}
+    at$ = chr$(codigo_teste)
+    am = 1
+    esperado_teste = 0
+    if codigo_teste = 32 or codigo_teste = 46 then esperado_teste = 1
+    if codigo_teste >= 48 and codigo_teste <= 63 then esperado_teste = 1
+    if codigo_teste >= 65 and codigo_teste <= 90 then esperado_teste = 1
+    if codigo_teste >= 97 and codigo_teste <= 122 then esperado_teste = 1
+    erro_teste = 0
+    on error goto {erro_caractere}
+    gosub {mapa_menu}
+    goto {caractere_validado}
+{erro_caractere}
+    if err <> 5 then print "FALHOU ERRO"; err: end
+    erro_teste = 1
+    resume {caractere_validado}
+{caractere_validado}
+    on error goto 0
+    if erro_teste = esperado_teste then print "FALHOU CODIGO"; codigo_teste: end
+    if esperado_teste then if ar$ <> chr$(codigo_teste + 128) then print "FALHOU INVERSO"; codigo_teste: end
+codigo_teste = codigo_teste + 1
+if codigo_teste < 256 then {testar_caractere}
+at$ = ""
+gosub {mapa_menu}
+if ar$ <> "" then print "FALHOU VAZIO": end
+at$ = "MSX Jogos 0123."
+gosub {mapa_menu}
+if len(ar$) <> len(at$) then print "FALHOU TAMANHO": end
+for indice_teste = 1 to len(at$)
+    if asc(mid$(ar$, indice_teste, 1)) <> asc(mid$(at$, indice_teste, 1)) + 128 then print "FALHOU TEXTO": end
+next indice_teste
+locate 0, 15
+print "TODOS PASSARAM";
+end

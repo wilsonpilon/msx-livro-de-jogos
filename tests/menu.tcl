@@ -1,4 +1,8 @@
 set test_log [open [file join [file dirname [info script]] menu.log] w]
+set font_file [open [file join [file dirname [info script]] .. examples alfabeto.bin] rb]
+binary scan [read $font_file] cu* font_bytes
+close $font_file
+set font_patterns [lrange $font_bytes 7 end]
 set throttle off
 set renderer none
 set pause_on_lost_focus off
@@ -7,7 +11,7 @@ set power on
 set phase boot
 set deadline 0
 set date_sent 0
-set titles {{Cassino} {Batalha naval} {Gorks} {Vinte e um} {Roleta} {Eletricista louco} {Frogger} {Tubarao!} {Cemiterio} {Formula um} {Poker profiss.} {Trem maluco} {Caple} {F. Interlagos} {Labirinto 3D}}
+set titles {{Cassino} {Batalha naval} {Gorks} {Vinte e um} {Roleta} {Eletricista louco} {Frogger} {Tubarao} {Cemiterio} {Formula um} {Poker profiss.} {Trem maluco} {Caple} {F. Interlagos} {Labirinto 3D}}
 
 proc report {message} {
     global test_log
@@ -37,17 +41,37 @@ proc screen_text {} {
 }
 
 proc check_menu {selection file} {
-    global titles
+    global titles font_patterns
     if {[string first "Arquivo: $file" [screen_text]] < 0} { return 0 }
     if {[debug read memory 0xfcaf] != 0 || [debug read memory 0xf3b0] != 40 ||
         [debug read memory 0xf3de] != 0 ||
         [debug read memory 0xf3e9] != 15 || [debug read memory 0xf3ea] != 4 ||
         [debug read memory 0xf3eb] != 4} { error "Modo ou cores do menu incorretos" }
     set raw [raw_screen]
-    foreach {row column code} {1 1 24 1 38 25 22 1 26 22 38 27 7 20 28 17 20 29} {
+    foreach {row column code} {1 1 24 1 38 1 22 1 3 22 38 5 7 20 18 17 20 17
+        3 12 11 3 13 12 3 14 13 3 15 14} {
         scan [string index $raw [expr {$row * 40 + $column}]] %c actual
         if {$actual != $code} { error "Moldura incorreta em $column,$row" }
     }
+    for {set column 2} {$column <= 37} {incr column} {
+        foreach {row code} {1 23 22 4 5 23 7 23 17 23} {
+            if {$column == 20 && ($row == 7 || $row == 17)} { continue }
+            scan [string index $raw [expr {$row * 40 + $column}]] %c actual
+            if {$actual != $code} { error "Horizontal incorreta em $column,$row" }
+        }
+    }
+    for {set row 2} {$row <= 21} {incr row} {
+        foreach {column code} {1 22 38 2} {
+            scan [string index $raw [expr {$row * 40 + $column}]] %c actual
+            if {$actual != $code} { error "Sombra ou vertical incorreta em $column,$row" }
+        }
+    }
+    for {set offset 0} {$offset < 2048} {incr offset} {
+        if {[debug read VRAM [expr {0x800 + $offset}]] != [lindex $font_patterns $offset]} {
+            error "Alfabeto Graphos modificado ou nao carregado no byte $offset"
+        }
+    }
+    if {$selection == 8 && [string first "Tubarao!" $raw] < 0} { error "Nome completo de Tubarao! perdido" }
     for {set index 1} {$index <= 15} {incr index} {
         set column 3
         set row [expr {7 + $index}]
@@ -63,12 +87,12 @@ proc check_menu {selection file} {
                 for {set line 0} {$line < 8} {incr line} {
                     set pattern [debug read VRAM [expr {0x800 + $normal * 8 + $line}]]
                     set inverse [debug read VRAM [expr {0x800 + $actual * 8 + $line}]]
-                    if {$inverse != ($pattern ^ 252)} { error "Destaque nao esta em video inverso de seis pixels" }
+                    if {$inverse != ($pattern ^ 255)} { error "Destaque nao usa o video inverso do Graphos" }
                 }
             }
         }
         scan [string index $raw [expr {$row * 40 + $column - 1}]] %c marker
-        if {$marker != ($index == $selection ? 128 : 32)} { error "Seta de selecao incorreta" }
+        if {$marker != ($index == $selection ? 166 : 32)} { error "Seta de selecao incorreta" }
     }
     return 1
 }
@@ -77,7 +101,7 @@ proc tick {} {
     global phase deadline date_sent
     set previous_phase $phase
     set text [screen_text]
-    if {[regexp -nocase {error|Redo} $text]} { error $text }
+    if {[regexp -nocase {error|Redo|Out of|Illegal|Type mismatch|File not found} $text]} { error $text }
     switch $phase {
         boot {
             if {[check_menu 1 CASSINO.BMX]} {
@@ -89,7 +113,7 @@ proc tick {} {
         }
         automatic_menu {
             if {[check_menu 1 CASSINO.BMX]} {
-                report "PASS: AUTOEXEC carrega menu em SCREEN 0, 40 colunas e KEY OFF"
+                report "PASS: AUTOEXEC carrega Graphos, logotipo MSX e moldura com sombra em SCREEN 0"
                 type_via_keybuf [format %c 31]
                 set phase battle
             }
@@ -139,7 +163,14 @@ proc tick {} {
         }
         right_wrap {
             if {[check_menu 7 FROGGER.BMX]} {
-                type_via_keybuf [format %c 30]
+                type_via_keybuf [format %c 31]
+                set phase tubarao
+            }
+        }
+        tubarao {
+            if {[check_menu 8 TUBARAO.BMX]} {
+                report "PASS: Tubarao usa titulo inverso valido e preserva nome completo"
+                type_via_keybuf [string repeat [format %c 30] 2]
                 set phase right_up_wrap
             }
         }

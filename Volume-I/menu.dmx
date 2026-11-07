@@ -1,5 +1,14 @@
 rem -- MSX JOGOS: VOLUME I
 
+declare am, af, qn, qs, qh, qb, mx, sg, at, ar
+declare arquivo_jogo:aj, arquivo:fl
+goto {iniciar_menu}
+
+{mapa_menu}
+    include "..\include\menu-alf.dmx"
+
+{iniciar_menu}
+clear 4096
 dim nome_jogo$(15), titulo_menu$(15), arquivo_jogo$(15)
 screen 0
 width 40
@@ -7,20 +16,18 @@ key off
 color 15, 4, 4
 cls
 locate 0, 0, 0
+bload "ALFABETO.BIN", s, base(2)
+am = 0
+gosub {mapa_menu}
 restore {dados_jogos}
 for indice = 1 to 15
     read nome_jogo$(indice), titulo_menu$(indice), arquivo_jogo$(indice)
 next indice
-gosub {definir_graficos}
-vertical$ = chr$(1) + chr$(86)
-horizontal$ = chr$(1) + chr$(87)
-canto_se$ = chr$(1) + chr$(88)
-canto_sd$ = chr$(1) + chr$(89)
-canto_ie$ = chr$(1) + chr$(90)
-canto_id$ = chr$(1) + chr$(91)
 linha$ = ""
+linha_inferior$ = ""
 for indice = 1 to 36
-    linha$ = linha$ + horizontal$
+    linha$ = linha$ + qb$(4)
+    linha_inferior$ = linha_inferior$ + qb$(5)
 next indice
 gosub {desenhar_tela}
 selecao = 1
@@ -63,7 +70,10 @@ gosub {mostrar_detalhes}
     locate 3, 20
     print "Arquivo nao encontrado no disco.";
     beep
-    tecla$ = input$(1)
+    ## INPUT$ reescreve o glifo 255 para o cursor; INKEY$ preserva a fonte.
+{aguardar_erro}
+    tecla$ = inkey$
+    if tecla$ = "" then {aguardar_erro}
     resume {retomar_menu}
 
 {retomar_menu}
@@ -81,17 +91,17 @@ gosub {mostrar_detalhes}
 
 {desenhar_tela}
     locate 1, 1
-    print canto_se$; linha$; canto_sd$;
+    print qb$(0); linha$; qb$(1);
     for linha_tela = 2 to 21
         locate 1, linha_tela
-        print vertical$;
+        print qb$(6);
         locate 38, linha_tela
-        print vertical$;
+        print qb$(7);
     next linha_tela
     locate 1, 22
-    print canto_ie$; linha$; canto_id$;
-    locate 10, 3
-    print chr$(129); " M S X  J O G O S "; chr$(129);
+    print qb$(2); linha_inferior$; qb$(3);
+    locate 12, 3
+    print mx$; " J O G O S ";
     locate 5, 4
     print "Volume I - Biblioteca de jogos";
     for linha_tela = 5 to 17 step 12
@@ -100,12 +110,12 @@ gosub {mostrar_detalhes}
     linha_tela = 7
     gosub {desenhar_divisoria}
     locate 20, 7
-    print chr$(1); chr$(92);
+    print af$(18);
     locate 20, 17
-    print chr$(1); chr$(93);
+    print af$(17);
     for linha_tela = 8 to 16
         locate 20, linha_tela
-        print vertical$;
+        print qn$(5);
     next linha_tela
     locate 3, 6
     print "Aprender / Criar";
@@ -116,8 +126,8 @@ gosub {mostrar_detalhes}
     return
 
 {desenhar_divisoria}
-    locate 1, linha_tela
-    print chr$(1); chr$(94); linha$; chr$(1); chr$(95);
+    locate 2, linha_tela
+    print linha$;
     return
 
 {desenhar_opcao}
@@ -126,14 +136,13 @@ gosub {mostrar_detalhes}
     if indice > 6 then coluna_opcao = 22: linha_opcao = 1 + indice
     texto_opcao$ = left$(titulo_menu$(indice) + space$(16), 16)
     if indice <> selecao then {imprimir_opcao}
-    texto_inverso$ = ""
-    for caractere = 1 to 16
-        texto_inverso$ = texto_inverso$ + chr$(asc(mid$(texto_opcao$, caractere, 1)) + 128)
-    next caractere
-    texto_opcao$ = texto_inverso$
+    am = 1
+    at$ = texto_opcao$
+    gosub {mapa_menu}
+    texto_opcao$ = ar$
 {imprimir_opcao}
     locate coluna_opcao - 1, linha_opcao
-    if indice = selecao then print chr$(128); else print " ";
+    if indice = selecao then print af$(166); else print " ";
     print texto_opcao$;
     return
 
@@ -150,28 +159,6 @@ gosub {mostrar_detalhes}
     print "ENTER abre o jogo. ESC sai.        ";
     return
 
-{definir_graficos}
-    endereco_padrao = base(2)
-    restore {dados_graficos}
-    for codigo = 22 to 31
-        for linha_grafico = 0 to 7
-            read padrao
-            vpoke endereco_padrao + codigo * 8 + linha_grafico, padrao
-        next linha_grafico
-    next codigo
-    for codigo = 128 to 129
-        for linha_grafico = 0 to 7
-            read padrao
-            vpoke endereco_padrao + codigo * 8 + linha_grafico, padrao
-        next linha_grafico
-    next codigo
-    rem -- SCREEN 0 usa seis pixels; a copia inversa ocupa os codigos 160-255.
-    endereco_inverso = endereco_padrao + 128 * 8
-    for deslocamento = 32 * 8 to 128 * 8 - 1
-        vpoke endereco_inverso + deslocamento, vpeek(endereco_padrao + deslocamento) xor &hfc
-    next deslocamento
-    return
-
 {dados_jogos}
     data "Cassino", "Cassino", "CASSINO.BMX"
     data "Batalha naval", "Batalha naval", "BATALHA.BMX"
@@ -180,7 +167,7 @@ gosub {mostrar_detalhes}
     data "Roleta", "Roleta", "ROLETA.BMX"
     data "O eletricista louco", "Eletricista louco", "ELETRIC.BMX"
     data "Frogger", "Frogger", "FROGGER.BMX"
-    data "Tubarao!", "Tubarao!", "TUBARAO.BMX"
+    data "Tubarao!", "Tubarao", "TUBARAO.BMX"
     data "O jogo do cemiterio", "Cemiterio", "CEMITER.BMX"
     data "Formula um", "Formula um", "FORMULA1.BMX"
     data "Poker profissional", "Poker profiss.", "POKER.BMX"
@@ -188,17 +175,3 @@ gosub {mostrar_detalhes}
     data "Caple", "Caple", "CAPLE.BMX"
     data "Formula Interlagos", "F. Interlagos", "INTERLAG.BMX"
     data "Labirinto tridimensional", "Labirinto 3D", "LABIR3D.BMX"
-
-{dados_graficos}
-    data &h48,&h48,&h48,&h48,&h48,&h48,&h48,&h48
-    data 0,0,&hfc,0,0,&hfc,0,0
-    data 0,0,&h7c,&h40,&h40,&h4c,&h48,&h48
-    data 0,0,&hf8,&h08,&h08,&hc8,&h48,&h48
-    data &h48,&h48,&h4c,&h40,&h40,&h7c,0,0
-    data &h48,&h48,&hc8,&h08,&h08,&hf8,0,0
-    data 0,0,&hfc,0,0,&hfc,&h48,&h48
-    data &h48,&h48,&hfc,&h48,&h48,&hfc,0,0
-    data &h48,&h48,&h7c,&h48,&h48,&h7c,&h48,&h48
-    data &h48,&h48,&hf8,&h48,&h48,&hf8,&h48,&h48
-    data 0,&h20,&h30,&hfc,&h30,&h20,0,0
-    data 0,&h30,&h78,&hfc,&h78,&h30,0,0

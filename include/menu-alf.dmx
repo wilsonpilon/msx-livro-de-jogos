@@ -1,0 +1,59 @@
+## Mapa de resources\menu.alf; nao carrega nem altera a VRAM.
+## Interface: am=0 inicializa; am=1 converte at$ para video inverso em ar$.
+## Saidas: af$(0..255), qn$(0..10), qs$(0..10), qh$(0..5), qb$(0..7), mx$, sg$.
+## Reserve espaco de strings no inicio do chamador, por exemplo CLEAR 2048.
+if am = 1 then {alfabeto_inverter}
+if am <> 0 then error 5
+dim af$(255), qn$(10), qs$(10), qh$(5), qb$(7)
+for codigo_alfabeto = 0 to 255
+    af$(codigo_alfabeto) = chr$(codigo_alfabeto)
+    if codigo_alfabeto < 32 then af$(codigo_alfabeto) = chr$(1) + chr$(codigo_alfabeto + 64)
+    if codigo_alfabeto = 127 then af$(codigo_alfabeto) = " "
+next codigo_alfabeto
+## Ordem: SE, SD, IE, ID, horizontal, vertical, T baixo, T cima,
+## T direita, T esquerda, cruz. A direcao do T indica sua haste.
+restore {alfabeto_quadros}
+for indice_alfabeto = 0 to 10
+    read codigo_alfabeto
+    qn$(indice_alfabeto) = af$(codigo_alfabeto)
+next indice_alfabeto
+for indice_alfabeto = 0 to 10
+    read codigo_alfabeto
+    qs$(indice_alfabeto) = af$(codigo_alfabeto)
+next indice_alfabeto
+## Pecas hachuradas: SD, vertical esquerda, IE, horizontal inferior,
+## ID, vertical direita. O canto SE deve vir de outra familia.
+for indice_alfabeto = 0 to 5
+    read codigo_alfabeto
+    qh$(indice_alfabeto) = af$(codigo_alfabeto)
+next indice_alfabeto
+## Borda fina com sombra solida inferior/direita: SE, SD, IE, ID,
+## horizontal superior, horizontal inferior, vertical esquerda, vertical direita.
+for indice_alfabeto = 0 to 7
+    read codigo_alfabeto
+    qb$(indice_alfabeto) = af$(codigo_alfabeto)
+next indice_alfabeto
+mx$ = af$(11) + af$(12) + af$(13) + af$(14)
+sg$ = af$(6) + af$(7) + af$(8) + af$(9)
+return
+
+{alfabeto_inverter}
+    ar$ = ""
+    if at$ = "" then return
+    for indice_alfabeto = 1 to len(at$)
+        codigo_alfabeto = asc(mid$(at$, indice_alfabeto, 1))
+        if codigo_alfabeto = 32 or codigo_alfabeto = 46 then {alfabeto_anexar}
+        if codigo_alfabeto >= 48 and codigo_alfabeto <= 63 then {alfabeto_anexar}
+        if codigo_alfabeto >= 65 and codigo_alfabeto <= 90 then {alfabeto_anexar}
+        if codigo_alfabeto >= 97 and codigo_alfabeto <= 122 then {alfabeto_anexar}
+        error 5
+{alfabeto_anexar}
+        ar$ = ar$ + chr$(codigo_alfabeto + 128)
+    next indice_alfabeto
+    return
+
+{alfabeto_quadros}
+    data 24,25,26,27,23,22,18,17,20,19,21
+    data 152,153,154,155,151,150,161,145,162,163,149
+    data 129,130,131,132,133,156
+    data 24,1,3,5,23,4,22,2

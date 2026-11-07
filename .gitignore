@@ -1,4 +1,9 @@
 /resources/*
+!/resources/menu.alf
+!/resources/menu-alf.png
 /tests/*.amx
 /tests/*.bmx
 /tests/*.log
+/examples/*.amx
+/examples/*.bmx
+/examples/menu.alf

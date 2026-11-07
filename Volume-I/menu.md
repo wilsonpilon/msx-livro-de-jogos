@@ -10,22 +10,37 @@ do [sumário](Volume-I.md#sumário), separados em **Aprender / Criar** e
 - **Esc**: limpa a tela e retorna ao BASIC em `SCREEN 0`, `WIDTH 40`,
   `COLOR 15,1,1` e `KEY OFF`.
 
-O desenho usa caracteres gráficos, molduras duplas e padrões de seis pixels
-gravados com `VPOKE BASE(2)`. `SCREEN 0` não oferece `LINE`, `CIRCLE` nem cores
-individuais: o menu usa branco sobre azul e uma cópia inversa da fonte para
-a faixa de seleção, sem mudar a cor da tela inteira. O nome completo e o
-arquivo aparecem abaixo da lista.
+O desenho usa o alfabeto **Graphos III**, carregado de
+[alfabeto.bin](disk/alfabeto.bin) com `BLOAD "ALFABETO.BIN",S,BASE(2)`.
+O [include compartilhado](../include/menu-alf.dmx) fornece o logotipo MSX,
+as molduras de borda fina com sombra sólida inferior/direita e a conversão
+para vídeo inverso. O menu não redefine caracteres nem recalcula a fonte.
+
+`SCREEN 0` mostra seis pixels por caractere e não oferece `LINE`, `CIRCLE`
+nem cores individuais: o menu mantém branco sobre azul, destacando a
+seleção com os glifos inversos e a seta da própria fonte. As divisórias
+internas não interrompem a sombra da moldura externa. O nome completo e
+o arquivo aparecem abaixo da lista.
+
+O título curto `Tubarao` não tem exclamação, pois a fonte não possui `!`
+inverso; os detalhes preservam o nome completo `Tubarao!`.
+O Cassino ainda usa os gráficos anteriores, até sua próxima adaptação.
 
 ## Disco e boot
 
 Monte [disk/](disk/) como disco A. O [autoexec.bas](disk/autoexec.bas) executa
-`RUN"MENU.BMX"` durante o boot do MSX Disk BASIC. O menu e os jogos precisam
-estar no mesmo disco. Em máquinas que pedem data, confirme primeiro essa
+`RUN"MENU.BMX"` durante o boot do MSX Disk BASIC. O menu, `ALFABETO.BIN` e
+os jogos precisam estar no mesmo disco. Sem o alfabeto, o carregamento
+produz o erro normal do BASIC, antes de apresentar o menu.
+Em máquinas que pedem data, confirme primeiro essa
 pergunta. Sem autoboot, digite `RUN"MENU.BMX"`.
 
 O pacote da versão 0.1.0 contém os três arquivos necessários para iniciar
 o menu e executar o Cassino (`AUTOEXEC.BAS`, `MENU.BMX` e `CASSINO.BMX`).
 Extraia-os para um disco MSX; o ZIP não é uma imagem de disco `.dsk`.
+Esse pacote antigo permanece inalterado. A versão atual do repositório
+também precisa de `ALFABETO.BIN`; ao copiar o menu atualizado, copie
+o alfabeto junto.
 
 A pasta de disco do repositório também contém [cassino.bas](disk/cassino.bas),
 a listagem original legada. Para executá-la separadamente, saia do menu e
@@ -63,13 +78,21 @@ Na raiz do repositório:
 
 ```powershell
 python resources\badig\badig.py Volume-I\menu.dmx -id msx --tk_tokenize -vb 4
-python resources\badig\badig.py Volume-I\disk\menu.dmx -id msx --tk_tokenize -vb 4
+python resources\badig\badig.py Volume-I\menu.dmx disk\menu.amx -id msx --tk_tokenize -vb 4
+Copy-Item examples\alfabeto.bin Volume-I\disk\alfabeto.bin
 $p = Start-Process openmsx -ArgumentList '-machine Gradiente_Expert_DD_Plus -diska Volume-I\disk -command "set renderer none" -script tests\menu.tcl' -PassThru -Wait
 Get-Content tests\menu.log
 $p.ExitCode
 ```
 
-O fonte no disco inclui o fonte principal para evitar cópias divergentes;
-os dois geram o mesmo programa tokenizado. O teste usa uma instância própria
-do openMSX e verifica autoboot, os 15 títulos, vídeo inverso, as quatro setas,
-arquivo ausente, saída e carregamento do Cassino real.
+O único fonte é [menu.dmx](menu.dmx), compilado diretamente para os dois
+destinos. Isso evita cópias divergentes e a resolução incorreta de caminhos
+em includes aninhados do Basic Dignified. Os dois destinos geram o mesmo
+programa tokenizado. O argumento de saída `disk\menu.amx` é relativo
+à pasta do fonte de entrada, não à pasta atual do PowerShell.
+
+Após editar e regenerar o [alfabeto](../examples/alfabeto.dmx), copie o BIN
+atualizado para o disco com o comando acima. O teste usa uma instância
+própria do openMSX e verifica autoboot, os 2.048 bytes da fonte sem
+alterações, logotipo, moldura, os 15 títulos, vídeo inverso, as quatro
+setas, arquivo ausente, saída e carregamento do Cassino real.

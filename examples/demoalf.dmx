@@ -1,0 +1,118 @@
+declare am, af, qn, qs, qh, qb, mx, sg, at, ar
+declare arquivo_exemplo:fe
+goto {iniciar_exemplo}
+
+{mapa_menu}
+    include "..\include\menu-alf.dmx"
+
+{iniciar_exemplo}
+clear 2048
+am = 0
+gosub {mapa_menu}
+modo_exemplo = 1
+original_exemplo = 0
+
+{mostrar_exemplo}
+    screen modo_exemplo
+    if modo_exemplo = 0 then width 40
+    if modo_exemplo = 1 then width 32
+    key off
+    color 15, 4, 4
+    cls
+    endereco_exemplo = base(2)
+    if modo_exemplo = 1 then endereco_exemplo = base(7)
+    if modo_exemplo = 2 then endereco_exemplo = base(12)
+    arquivo_exemplo$ = "ALFABETO.BIN"
+    deslocamento_exemplo = endereco_exemplo
+    if original_exemplo then arquivo_exemplo$ = "MENU.ALF": deslocamento_exemplo = endereco_exemplo - &h9200
+    bload arquivo_exemplo$, s, deslocamento_exemplo
+    if modo_exemplo <> 2 then {desenhar_exemplo}
+    ## SCREEN 2 possui um banco de padroes para cada faixa de oito linhas.
+    bload arquivo_exemplo$, s, deslocamento_exemplo + &h800
+    bload arquivo_exemplo$, s, deslocamento_exemplo + &h1000
+    for byte_exemplo = 0 to &h17ff
+        vpoke base(11) + byte_exemplo, &hf4
+    next byte_exemplo
+
+{desenhar_exemplo}
+    coluna_exemplo = 0
+    linha_exemplo = 0
+    texto_exemplo$ = "GRAPHOS III - SCREEN" + str$(modo_exemplo)
+    gosub {desenhar_texto}
+    coluna_exemplo = 26
+    texto_exemplo$ = mx$
+    gosub {desenhar_texto}
+    at$ = "MSX Jogos"
+    am = 1
+    gosub {mapa_menu}
+    coluna_exemplo = 11
+    linha_exemplo = 1
+    texto_exemplo$ = ar$
+    gosub {desenhar_texto}
+    for linha_exemplo = 2 to 19 step 17
+        coluna_exemplo = 6
+        texto_exemplo$ = qb$(0)
+        if linha_exemplo = 19 then texto_exemplo$ = qb$(2)
+        for indice_quadro = 1 to 18
+            if linha_exemplo = 2 then texto_exemplo$ = texto_exemplo$ + qb$(4) else texto_exemplo$ = texto_exemplo$ + qb$(5)
+        next indice_quadro
+        if linha_exemplo = 2 then texto_exemplo$ = texto_exemplo$ + qb$(1) else texto_exemplo$ = texto_exemplo$ + qb$(3)
+        gosub {desenhar_texto}
+    next linha_exemplo
+    for linha_exemplo = 3 to 18
+        coluna_exemplo = 6
+        texto_exemplo$ = qb$(6)
+        gosub {desenhar_texto}
+        coluna_exemplo = 25
+        texto_exemplo$ = qb$(7)
+        gosub {desenhar_texto}
+    next linha_exemplo
+    for codigo_exemplo = 0 to 255
+        coluna_exemplo = 8 + (codigo_exemplo mod 16)
+        linha_exemplo = 3 + codigo_exemplo \ 16
+        gosub {desenhar_glifo}
+    next codigo_exemplo
+    coluna_exemplo = 0
+    linha_exemplo = 20
+    texto_exemplo$ = "0/1/2 modo  L fonte  ESC sair"
+    gosub {desenhar_texto}
+    coluna_exemplo = 0
+    linha_exemplo = 21
+    texto_exemplo$ = "Fonte: " + arquivo_exemplo$
+    gosub {desenhar_texto}
+
+{aguardar_exemplo}
+    tecla_exemplo$ = inkey$
+    if tecla_exemplo$ = "" then {aguardar_exemplo}
+    if tecla_exemplo$ = chr$(27) then {sair_exemplo}
+    if tecla_exemplo$ = "l" or tecla_exemplo$ = "L" then original_exemplo = 1 - original_exemplo: goto {mostrar_exemplo}
+    if tecla_exemplo$ < "0" or tecla_exemplo$ > "2" then {aguardar_exemplo}
+    modo_exemplo = val(tecla_exemplo$)
+    goto {mostrar_exemplo}
+
+{desenhar_texto}
+    for indice_exemplo = 1 to len(texto_exemplo$)
+        codigo_exemplo = asc(mid$(texto_exemplo$, indice_exemplo, 1))
+        if codigo_exemplo <> 1 then {imprimir_texto}
+        ## As sequencias graficas do include representam os codigos 0-31.
+        indice_exemplo = indice_exemplo + 1
+        codigo_exemplo = asc(mid$(texto_exemplo$, indice_exemplo, 1)) - 64
+{imprimir_texto}
+        gosub {desenhar_glifo}
+        coluna_exemplo = coluna_exemplo + 1
+    next indice_exemplo
+    return
+
+{desenhar_glifo}
+    if modo_exemplo = 2 then vpoke base(10) + linha_exemplo * 32 + coluna_exemplo, codigo_exemplo: return
+    locate coluna_exemplo, linha_exemplo
+    print af$(codigo_exemplo);
+    return
+
+{sair_exemplo}
+    screen 0
+    width 40
+    color 15, 1, 1
+    key off
+    cls
+    end

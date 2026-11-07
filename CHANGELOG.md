@@ -2,6 +2,13 @@
 
 ## Não lançado
 
+- Mapa e include compartilhado do alfabeto Graphos III, com identificação
+  das letras, vídeo inverso, molduras, sombras, setas e logotipo MSX.
+- Exemplos com os 256 caracteres editáveis em DATA binário, geração de
+  `ALFABETO.BIN` e demonstração em `SCREEN 0`, `1` e `2`, testados no openMSX.
+- Menu do Volume I usa o alfabeto Graphos III em `ALFABETO.BIN`, com
+  logotipo MSX, borda fina e sombra sólida, sem redefinir os padrões.
+  O BIN deve acompanhar o menu no disco. Cassino permanece inalterado.
 - Incluída no disco do repositório a listagem legada `CASSINO.BAS`, para
   execução independente. O pacote publicado de 0.1.0 permanece inalterado.
 

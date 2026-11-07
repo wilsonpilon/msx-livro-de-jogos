@@ -31,12 +31,27 @@ O ambiente principal de desenvolvimento é o **Visual Studio Code**. Os programa
 - [**Basic Dignified Suite**](https://github.com/farique1/basic-dignified) — ferramentas e dialeto usados para escrever e preparar os programas em BASIC.
 - **SDCC** e [**MSXgl**](https://github.com/aoineko-fr/MSXgl) — ferramentas consideradas para eventuais versões em C: o compilador SDCC e a biblioteca MSXgl para desenvolvimento no MSX.
 
+### Alfabeto gráfico compartilhado
+
+O [mapa de `menu.alf`](./docs/menu-alf.md) identifica letras normais,
+vídeo inverso, molduras sombreadas e hachuradas, setas e as quatro peças
+do logotipo MSX. O [include reutilizável](./include/menu-alf.dmx) fornece
+sequências de impressão e conversão para vídeo inverso, sem carregar a
+fonte nem substituir os gráficos atuais dos jogos.
+Os [exemplos Graphos III](./docs/menu-alf.md#exemplo-executável-e-alfabeto-editável)
+incluem um [gerador com DATA binário editável](./examples/alfabeto.dmx),
+um [BIN pronto](./examples/alfabeto.bin) e uma
+[demonstração em SCREEN 0, 1 e 2](./examples/demoalf.dmx).
+
 ## Menu do Volume I
 
 O [menu em Basic Dignified](./Volume-I/menu.dmx) apresenta os 15 jogos do
-sumário em duas categorias, com molduras duplas e seleção em vídeo inverso
-em `SCREEN 0`. Use as **setas** para escolher, **Enter** para executar e
-**Esc** para sair. O [disco](./Volume-I/disk/) contém `MENU.BMX` e
+sumário em duas categorias, com seleção em vídeo inverso em `SCREEN 0`.
+Na versão atual, o menu usa o alfabeto Graphos III, logotipo MSX e
+molduras de borda fina com sombra sólida. Use as **setas** para escolher,
+**Enter** para executar e
+**Esc** para sair. O [disco](./Volume-I/disk/) contém `MENU.BMX`,
+[ALFABETO.BIN](./Volume-I/disk/alfabeto.bin) e
 [AUTOEXEC.BAS](./Volume-I/disk/autoexec.bas) para carregar o menu no boot.
 Por enquanto, apenas o Cassino está disponível; arquivos ausentes geram
 um aviso sem fechar o menu. Veja [instruções e nomes dos arquivos](./Volume-I/menu.md).
