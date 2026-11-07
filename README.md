@@ -40,6 +40,9 @@ em `SCREEN 0`. Use as **setas** para escolher, **Enter** para executar e
 [AUTOEXEC.BAS](./Volume-I/disk/autoexec.bas) para carregar o menu no boot.
 Por enquanto, apenas o Cassino está disponível; arquivos ausentes geram
 um aviso sem fechar o menu. Veja [instruções e nomes dos arquivos](./Volume-I/menu.md).
+O repositório também inclui no disco a [listagem legada do Cassino](./Volume-I/disk/cassino.bas),
+executável separadamente com `RUN"CASSINO.BAS"`; o menu continua abrindo
+a versão modernizada.
 
 ## Modernização das listagens: Cassino
 

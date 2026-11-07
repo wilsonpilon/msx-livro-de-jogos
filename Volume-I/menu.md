@@ -27,6 +27,11 @@ O pacote da versão 0.1.0 contém os três arquivos necessários para iniciar
 o menu e executar o Cassino (`AUTOEXEC.BAS`, `MENU.BMX` e `CASSINO.BMX`).
 Extraia-os para um disco MSX; o ZIP não é uma imagem de disco `.dsk`.
 
+A pasta de disco do repositório também contém [cassino.bas](disk/cassino.bas),
+a listagem original legada. Para executá-la separadamente, saia do menu e
+digite `RUN"CASSINO.BAS"`; ela não está no ZIP publicado da versão 0.1.0.
+O menu continua carregando o Cassino modernizado (`CASSINO.BMX`).
+
 Só o Cassino está disponível nesta etapa. Escolher um arquivo ausente mostra
 **Arquivo nao encontrado no disco.**; pressione uma tecla para continuar.
 Outros erros BASIC não são ocultados. Ao encerrar um jogo, ele mantém seu

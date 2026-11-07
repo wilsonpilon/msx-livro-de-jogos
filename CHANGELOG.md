@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## Não lançado
+
+- Incluída no disco do repositório a listagem legada `CASSINO.BAS`, para
+  execução independente. O pacote publicado de 0.1.0 permanece inalterado.
+
 ## 0.1.0 — 2026-11-06
 
 Primeira versão funcional do Volume I, com menu inicializável e Cassino
