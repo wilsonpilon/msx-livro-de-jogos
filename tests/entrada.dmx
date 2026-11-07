@@ -1,0 +1,59 @@
+screen 0
+width 40
+key off
+for teste = 1 to 15
+    read modo, resultado_teste$
+    if teste = 13 then resultado_teste$ = chr$(233) + chr$(34) + ":"
+    cls
+    locate 0, 0
+    print "Caso"; teste
+    locate 3, 5
+    print chr$(1); chr$(86); "ANTES>";
+    locate 18, 5
+    print "<DEPOIS"; chr$(1); chr$(86);
+    ec = 10
+    el = 5
+    et = 8
+    if modo = 0 then gosub {entrada_texto} else gosub {entrada_numero}
+    if es$ <> resultado_teste$ then print "FALHOU"; teste; "["; es$; "]": end
+    if modo = 1 and ev# <> val(resultado_teste$) then print "VALOR INCORRETO": end
+    locate 0, 7
+    print "PASSOU"; teste
+    tecla_teste$ = input$(1)
+next teste
+screen 1
+width 32
+on error goto {erro_limite}
+ec = 24
+el = 5
+et = 8
+gosub {entrada_texto}
+print "FALHOU: aceitou campo fora da tela"
+end
+
+{erro_limite}
+    if err <> 5 then print "FALHOU: erro inesperado"; err: end
+    resume {limite_validado}
+
+{limite_validado}
+on error goto 0
+screen 0
+width 40
+print "TODOS PASSARAM"
+end
+
+data 0,"abXd",0,"aXbcd",0,"ad",0,"aXYcd"
+data 0,"12345678",0,"",0,"a b!?~"
+data 1,"-12.5",1,"+3.25",1,"12.3",1,"0",1,"2"
+data 0,""
+data 0,"12345678",0,"1234567X"
+
+{entrada_numero}
+    em = 1
+    goto {entrada_campo}
+
+{entrada_texto}
+    em = 0
+
+{entrada_campo}
+    include "..\include\entrada.dmx"

@@ -1,0 +1,204 @@
+rem -- MSX JOGOS: VOLUME I
+
+dim nome_jogo$(15), titulo_menu$(15), arquivo_jogo$(15)
+screen 0
+width 40
+key off
+color 15, 4, 4
+cls
+locate 0, 0, 0
+restore {dados_jogos}
+for indice = 1 to 15
+    read nome_jogo$(indice), titulo_menu$(indice), arquivo_jogo$(indice)
+next indice
+gosub {definir_graficos}
+vertical$ = chr$(1) + chr$(86)
+horizontal$ = chr$(1) + chr$(87)
+canto_se$ = chr$(1) + chr$(88)
+canto_sd$ = chr$(1) + chr$(89)
+canto_ie$ = chr$(1) + chr$(90)
+canto_id$ = chr$(1) + chr$(91)
+linha$ = ""
+for indice = 1 to 36
+    linha$ = linha$ + horizontal$
+next indice
+gosub {desenhar_tela}
+selecao = 1
+for indice = 1 to 15
+    gosub {desenhar_opcao}
+next indice
+gosub {mostrar_detalhes}
+
+{aguardar_tecla}
+    tecla$ = inkey$
+    if tecla$ = "" then {aguardar_tecla}
+    if tecla$ = chr$(27) then {sair}
+    if tecla$ = chr$(13) then {executar_jogo}
+    anterior = selecao
+    if tecla$ = chr$(30) then selecao = selecao - 1
+    if tecla$ = chr$(31) then selecao = selecao + 1
+    if anterior <= 6 and selecao < 1 then selecao = 6
+    if anterior <= 6 and selecao > 6 then selecao = 1
+    if anterior > 6 and selecao < 7 then selecao = 15
+    if anterior > 6 and selecao > 15 then selecao = 7
+    if tecla$ = chr$(29) and anterior > 6 then selecao = anterior - 6
+    if tecla$ = chr$(29) and selecao > 6 then selecao = 6
+    if tecla$ = chr$(28) and anterior <= 6 then selecao = anterior + 6
+    if selecao = anterior then {aguardar_tecla}
+    indice = anterior
+    gosub {desenhar_opcao}
+    indice = selecao
+    gosub {desenhar_opcao}
+    gosub {mostrar_detalhes}
+    play "t255o5v7l64c"
+    goto {aguardar_tecla}
+
+{executar_jogo}
+    arquivo$ = arquivo_jogo$(selecao)
+    on error goto {erro_carregamento}
+    run arquivo$
+
+{erro_carregamento}
+    if err <> 53 then on error goto 0
+    locate 3, 20
+    print "Arquivo nao encontrado no disco.";
+    beep
+    tecla$ = input$(1)
+    resume {retomar_menu}
+
+{retomar_menu}
+    on error goto 0
+    gosub {mostrar_detalhes}
+    goto {aguardar_tecla}
+
+{sair}
+    screen 0
+    width 40
+    color 15, 1, 1
+    key off
+    cls
+    end
+
+{desenhar_tela}
+    locate 1, 1
+    print canto_se$; linha$; canto_sd$;
+    for linha_tela = 2 to 21
+        locate 1, linha_tela
+        print vertical$;
+        locate 38, linha_tela
+        print vertical$;
+    next linha_tela
+    locate 1, 22
+    print canto_ie$; linha$; canto_id$;
+    locate 10, 3
+    print chr$(129); " M S X  J O G O S "; chr$(129);
+    locate 5, 4
+    print "Volume I - Biblioteca de jogos";
+    for linha_tela = 5 to 17 step 12
+        gosub {desenhar_divisoria}
+    next linha_tela
+    linha_tela = 7
+    gosub {desenhar_divisoria}
+    locate 20, 7
+    print chr$(1); chr$(92);
+    locate 20, 17
+    print chr$(1); chr$(93);
+    for linha_tela = 8 to 16
+        locate 20, linha_tela
+        print vertical$;
+    next linha_tela
+    locate 3, 6
+    print "Aprender / Criar";
+    locate 22, 6
+    print "Profissionais";
+    locate 3, 21
+    print "Setas: escolher  ENTER: jogar";
+    return
+
+{desenhar_divisoria}
+    locate 1, linha_tela
+    print chr$(1); chr$(94); linha$; chr$(1); chr$(95);
+    return
+
+{desenhar_opcao}
+    coluna_opcao = 3
+    linha_opcao = 7 + indice
+    if indice > 6 then coluna_opcao = 22: linha_opcao = 1 + indice
+    texto_opcao$ = left$(titulo_menu$(indice) + space$(16), 16)
+    if indice <> selecao then {imprimir_opcao}
+    texto_inverso$ = ""
+    for caractere = 1 to 16
+        texto_inverso$ = texto_inverso$ + chr$(asc(mid$(texto_opcao$, caractere, 1)) + 128)
+    next caractere
+    texto_opcao$ = texto_inverso$
+{imprimir_opcao}
+    locate coluna_opcao - 1, linha_opcao
+    if indice = selecao then print chr$(128); else print " ";
+    print texto_opcao$;
+    return
+
+{mostrar_detalhes}
+    locate 3, 18
+    print space$(34);
+    locate 3, 18
+    print nome_jogo$(selecao);
+    locate 3, 19
+    print space$(34);
+    locate 3, 19
+    print "Arquivo: "; arquivo_jogo$(selecao);
+    locate 3, 20
+    print "ENTER abre o jogo. ESC sai.        ";
+    return
+
+{definir_graficos}
+    endereco_padrao = base(2)
+    restore {dados_graficos}
+    for codigo = 22 to 31
+        for linha_grafico = 0 to 7
+            read padrao
+            vpoke endereco_padrao + codigo * 8 + linha_grafico, padrao
+        next linha_grafico
+    next codigo
+    for codigo = 128 to 129
+        for linha_grafico = 0 to 7
+            read padrao
+            vpoke endereco_padrao + codigo * 8 + linha_grafico, padrao
+        next linha_grafico
+    next codigo
+    rem -- SCREEN 0 usa seis pixels; a copia inversa ocupa os codigos 160-255.
+    endereco_inverso = endereco_padrao + 128 * 8
+    for deslocamento = 32 * 8 to 128 * 8 - 1
+        vpoke endereco_inverso + deslocamento, vpeek(endereco_padrao + deslocamento) xor &hfc
+    next deslocamento
+    return
+
+{dados_jogos}
+    data "Cassino", "Cassino", "CASSINO.BMX"
+    data "Batalha naval", "Batalha naval", "BATALHA.BMX"
+    data "Gorks", "Gorks", "GORKS.BMX"
+    data "Vinte e um", "Vinte e um", "VINTEUM.BMX"
+    data "Roleta", "Roleta", "ROLETA.BMX"
+    data "O eletricista louco", "Eletricista louco", "ELETRIC.BMX"
+    data "Frogger", "Frogger", "FROGGER.BMX"
+    data "Tubarao!", "Tubarao!", "TUBARAO.BMX"
+    data "O jogo do cemiterio", "Cemiterio", "CEMITER.BMX"
+    data "Formula um", "Formula um", "FORMULA1.BMX"
+    data "Poker profissional", "Poker profiss.", "POKER.BMX"
+    data "Trem maluco", "Trem maluco", "TREM.BMX"
+    data "Caple", "Caple", "CAPLE.BMX"
+    data "Formula Interlagos", "F. Interlagos", "INTERLAG.BMX"
+    data "Labirinto tridimensional", "Labirinto 3D", "LABIR3D.BMX"
+
+{dados_graficos}
+    data &h48,&h48,&h48,&h48,&h48,&h48,&h48,&h48
+    data 0,0,&hfc,0,0,&hfc,0,0
+    data 0,0,&h7c,&h40,&h40,&h4c,&h48,&h48
+    data 0,0,&hf8,&h08,&h08,&hc8,&h48,&h48
+    data &h48,&h48,&h4c,&h40,&h40,&h7c,0,0
+    data &h48,&h48,&hc8,&h08,&h08,&hf8,0,0
+    data 0,0,&hfc,0,0,&hfc,&h48,&h48
+    data &h48,&h48,&hfc,&h48,&h48,&hfc,0,0
+    data &h48,&h48,&h7c,&h48,&h48,&h7c,&h48,&h48
+    data &h48,&h48,&hf8,&h48,&h48,&hf8,&h48,&h48
+    data 0,&h20,&h30,&hfc,&h30,&h20,0,0
+    data 0,&h30,&h78,&hfc,&h78,&h30,0,0

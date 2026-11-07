@@ -1,0 +1,38 @@
+## Interface entre namespaces: ra, rb, rc -> pm, mp$ e jp.
+## PM e pagamento bruto em apostas; JP identifica apenas o 777 natural.
+pm = 0
+jp = 0
+mp$ = "Sem premio. Tente de novo!"
+quantidade_cerejas = 0
+quantidade_curingas = 0
+quantidade_setes = 0
+familia_joias = 1
+simbolo_alvo = 0
+simbolos_iguais = 1
+for indice_premio = 1 to 3
+    if indice_premio = 1 then simbolo_atual = ra else if indice_premio = 2 then simbolo_atual = rb else simbolo_atual = rc
+    if simbolo_atual <> int(simbolo_atual) or simbolo_atual < 1 or simbolo_atual > 9 then error 5
+    if simbolo_atual = 1 then quantidade_cerejas = quantidade_cerejas + 1
+    if simbolo_atual = 7 then quantidade_setes = quantidade_setes + 1
+    if simbolo_atual = 9 then quantidade_curingas = quantidade_curingas + 1
+    if (simbolo_atual < 4 or simbolo_atual > 6) and simbolo_atual <> 9 then familia_joias = 0
+    if simbolo_atual <> 9 and simbolo_alvo = 0 then simbolo_alvo = simbolo_atual
+    if simbolo_atual <> 9 and simbolo_atual <> simbolo_alvo then simbolos_iguais = 0
+next indice_premio
+
+if quantidade_setes = 3 then pm = 40: jp = 1: mp$ = "Tres setes! Premio maximo!": return
+if quantidade_curingas = 3 then pm = 10: mp$ = "Tres naves!": return
+if quantidade_setes = 2 and quantidade_curingas = 1 then pm = 10: mp$ = "Dois setes e uma nave!": return
+
+if simbolos_iguais = 0 then {premio_familia}
+pm = 3
+mp$ = "Tres iguais!"
+if simbolo_alvo = 1 then pm = 10: mp$ = "Tres cerejas!"
+if quantidade_curingas > 0 then pm = pm * 2: mp$ = "Trinca com curinga!"
+
+{premio_familia}
+    if familia_joias and pm < 2 then pm = 2: mp$ = "Joias misturadas!"
+    if quantidade_cerejas = 2 and pm < 3 then pm = 3: mp$ = "Duas cerejas!"
+    if quantidade_cerejas = 3 and pm < 10 then pm = 10: mp$ = "Tres cerejas!"
+    if ra = 1 and pm < 1 then pm = 1: mp$ = "Cereja: aposta devolvida!"
+    return

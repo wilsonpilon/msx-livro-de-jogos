@@ -4,6 +4,11 @@ Registro da conversa de 05/11/2026, em ordem cronologica. As solicitacoes e
 respostas abaixo preservam o conteudo da conversa; a execucao das ferramentas
 esta consolidada nas notas tecnicas, sem transcrever seus logs.
 
+**Nota de 06/11/2026:** este registro descreve uma pausa histórica, não o
+estado atual. Para a versão 0.1.0, consulte [resume.txt](resume.txt),
+[cassino.md](cassino.md), [menu.md](menu.md) e o
+[histórico de versões](../CHANGELOG.md).
+
 ## 1. Conversao inicial para Basic Dignified
 
 ### Solicitacao do usuario

@@ -1,80 +1,47 @@
-RETOMADA - CASSINO MSX / BASIC DIGNIFIED
-Pausa registrada em 05/11/2026.
+RETOMADA - MSX JOGOS, VOLUME I - VERSAO 0.1.0
+Encerramento em 06/11/2026.
 
-Pasta de trabalho: C:\dos\zx81-colecao
-Leia primeiro OUTLINE.md, depois cassino.dmx e cassino.md.
+ESTADO
+O menu apresenta os 15 jogos do sumario em duas categorias. Apenas o
+Cassino esta disponivel; a selecao dos demais informa arquivo ausente.
+AUTOEXEC.BAS inicia MENU.BMX no boot do MSX Disk BASIC. O pacote da
+versao inclui AUTOEXEC.BAS, MENU.BMX e CASSINO.BMX; nao e uma imagem DSK.
 
-OBJETIVO
-Modernizar o antigo caca-niqueis MSX-BASIC para Basic Dignified,
-com labels, nomes claros, abertura, molduras graficas, cores e audio.
-Apesar do nome da pasta, cassino.dmx e MSX, nao ZX81.
+Menu: menu.dmx, menu.md e disk/autoexec.bas.
+Cassino: cassino.dmx, cassino.md e disk/cassino.bmx.
+Rotinas compartilhadas: ../include/entrada.dmx e ../include/premios.dmx.
+Historico da versao: ../CHANGELOG.md.
+OUTLINE.md registra a pausa anterior e nao descreve o estado atual.
 
-CONVERSA E ENTREGAS
-1. Removemos os numeros de linha e os saltos numericos.
-   Separamos os comandos e demos nomes longos as variaveis.
-2. Mantivemos labels na margem esquerda, blocos com quatro espacos
-   e lacos internos com oito. Comandos/palavras-chave e MML de play
-   em minusculas; mensagens com inicial maiuscula, sem acentos.
-3. Criamos abertura baseada em cassino.md, mantendo screen 0.
-   Tela de 40 colunas, key off, moldura externa e quadros graficos
-   internacionais MSX, oito atualizacoes por rolo e melodias PSG.
-   Corrigimos a posicao do terceiro numero para dentro do quadro.
-   Atualizamos cassino.md para refletir o jogo.
-4. Salvamos OUTLINE.md com o historico e este resumo para retomada.
-   Nesta ultima etapa, o codigo do jogo nao foi alterado.
+MENU
+SCREEN 0, WIDTH 40, KEY OFF, molduras duplas e selecao em video inverso.
+Setas navegam, Enter executa, Esc retorna ao BASIC. Ao sair do Cassino
+o controle volta ao BASIC; RUN"MENU.BMX" abre novamente o menu.
+Consulte menu.md para os nomes 8.3 previstos para os proximos jogos.
 
-FONTE ATUAL
-cassino.dmx: 165 linhas no momento da pausa.
-cassino.md: regras, apresentacao, instrucoes e tabela de premios.
-palito.dzx: nao alterado, fora do escopo.
-OUTLINE.md: registro detalhado desta conversa.
+CASSINO
+SCREEN 1, 32 colunas, simbolos 8x8, molduras duplas e cores por grupos.
+Campos de saldo e aposta usam editor compartilhado, com setas, Insert,
+DEL e Backspace. As regras e controles aparecem em duas telas na abertura.
+Ha cerejas, joias, nave curinga, Hold e dobro ou nada; nao ha Nudge.
+Premios sao brutos e incluem a aposta; somente o maior premio e pago.
+S reinicia com saldo novo; N retorna a SCREEN 0, WIDTH 40, COLOR 15,1,1.
+Leia cassino.md para prioridades, pagamentos e calibracao completos.
 
-REGRAS
-Numeros de 1 a 9.
-Tres iguais: resultado = aposta * 50.
-Tres setes: resultado = aposta * 500.
-Outras combinacoes: resultado = -aposta.
-Saldo recebe o resultado, sem desconto separado antes de um premio.
-Aposta zero ou maior que o saldo encerra, como no original.
-Nao foi feita nova politica para entradas negativas ou invalidas.
+VALIDACAO
+Conversao Basic Dignified e tokenizacao de menu e Cassino concluidas.
+No openMSX: autoboot, navegacao, arquivo ausente, saida e carga do
+Cassino; jogo normal e nove rodadas controladas, incluindo Hold e
+dobro ou nada. O avaliador foi testado nas 729 combinacoes; a conta
+independente estima retorno teorico de 92,18% sem Hold e 97,09% com
+Hold otimo e aposta fixa. A entrada foi exercitada com sequencias de
+edicao. Nao ha validacao em hardware real.
 
-DETALHES TECNICOS
-Labels: abertura, iniciar_rodada, mostrar_resultado, premiar_acerto,
-premiar_setes, sortear_numero, encerrar, desenhar_moldura.
-Molduras: chr$(1) + chr$(86 a 91), respectivamente vertical,
-horizontal, superior esquerdo/direito e inferior esquerdo/direito.
-Moldura externa: colunas 1 e 38, linhas 1 a 22.
-Numeros dos rolos: colunas 9, 19 e 29, linha 8.
-Em screen 0 as cores sao globais, nao individuais por quadro.
-Paletas variam por etapa; premio maximo amarelo sobre azul.
-Saida normal executa key on e end.
-
-VALIDACAO JA REALIZADA
-Conversor Python original:
-C:\dos\goBaDig\badig\badig.py
-Conversao MSX e tokenizacao concluidas sem erros.
-Binario temporario de teste: 2.600 bytes.
-Conferidas coordenadas constantes, larguras de mensagens literais,
-linhas BASIC ate 255 caracteres e sintaxe do subconjunto MML usado.
-Saidas temporarias de validacao removidas.
-NAO testamos imagem, audio ou fluxo em emulador/hardware.
-Larguras de todos os valores numericos possiveis nao foram testadas.
-
-PARA CONVERTER NOVAMENTE EM POWERSHELL
-Na pasta C:\dos\livro-de-jogos\Volume-I:
-python ..\resources\badig\badig.py .\cassino.dmx .\cassino.amx -id msx --tk_tokenize -vb 4
-Gera cassino.amx e cassino.bmx para teste no MSX.
-O .dmx precisa ser convertido; nao e listagem numerada para RUN direto.
-O README de goBaDig consultado descrevia o executavel Go como stub,
-sem conversor/tokenizer; confirmar o estado antes de trocar a ferramenta.
-
-PROXIMA SESSAO
-Prioridade: testar em emulador com tabela internacional MSX.
-Conferir abertura, molduras, rolos, cores, musica e ritmo da animacao.
-Testar perdas, tres iguais, tres setes, atualizacao do saldo e retorno.
-Testar saida por zero e aposta maior que saldo; conferir key on.
-Para premios raros, usar apenas copia temporaria com sorteios controlados.
-Nao deixar resultados forcados no fonte final.
-Avaliar entradas negativas e valores longos antes de mudar regras.
-Manter o estilo aprovado e atualizar a documentacao junto ao codigo.
-Nao ha nova funcionalidade obrigatoria combinada; falta validar em execucao.
+PARA RETOMAR
+Consulte README.md e os documentos de menu e Cassino. Os proximos jogos
+do sumario ainda precisam ser implementados; nao existe compromisso
+estabelecido sobre qual sera o proximo. Ao adicionar um jogo, mantenha
+o nome 8.3 documentado ou atualize os DATA do menu e sua documentacao.
+Recursos locais da Basic Dignified Suite ficam em resources/ e nao sao
+incluidos no repositorio. Nao remova nem altere arquivos locais do usuario
+sem verificar seu estado.

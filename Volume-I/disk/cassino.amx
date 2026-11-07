@@ -1,146 +1,428 @@
 10 'Converted with Basic Dignified
 20 'https://github.com/farique1/basic-dignified
 30 rem -- CASSINO
-40 screen 0
-50 width 40
-60 key off
-70 color 11,1,1
-80 zz=rnd(-time)
-90 for zy=1 to zz
-100 zx=rnd(1)
-110 next
-120 rem -- Graficos internacionais: prefixo chr$(1), codigos 86 a 91.
-130 zw$=chr$(1)+chr$(86)
-140 zv$=chr$(1)+chr$(87)
-150 zu$=chr$(1)+chr$(88)
-160 zt$=chr$(1)+chr$(89)
-170 zs$=chr$(1)+chr$(90)
-180 zr$=chr$(1)+chr$(91)
-190 zq$=""
-200 for zy=1 to 36
-210 zq$=zq$+zv$
-220 next
-230 zp$=zu$
-240 zo$=zs$
-250 for zy=1 to 5
-260 zp$=zp$+zv$
-270 zo$=zo$+zv$
-280 next
-290 zp$=zp$+zt$
-300 zo$=zo$+zr$
-310 gosub 1330
-320 locate 8,5
-330 print "A sorte esta nos numeros!"
-340 locate 4,7
-350 print "Escolha o saldo e faca sua aposta."
-360 locate 4,9
-370 print "Tres iguais: ganhe 50 x a aposta."
-380 locate 4,11
-390 print "Tres setes: ganhe 500 x a aposta!"
-400 locate 4,13
-410 print "Outros numeros: perde a aposta."
-420 locate 4,15
-430 print "Aposte zero para sair do jogo."
-440 locate 4,18
-450 print "Pressione uma tecla para comecar"
-460 play "t180o5v10l8cego6c4","t180o3v7l4cge2"
-470 zn$=input$(1)
-480 color 15,1,1
-490 gosub 1330
-500 locate 4,8
-510 input "Quantia inicial :";zm
-520 color 10,1,1
-530 gosub 1330
-540 for zy=1 to 3
-550 zl=6+(zy-1)*10
-560 locate zl,7
-570 print zp$;
-580 locate zl,8
-590 print zw$;"     ";zw$;
-600 locate zl,9
-610 print zo$;
-620 next zy
-630 locate 4,11
-640 print "Saldo :";zm
-650 locate 4,18
-660 print "Aposte zero para encerrar"
-670 locate 4,13
-680 input "Sua aposta :";zk
-690 if zk=0 or zk>zm then 1220
-700 color 11,1,1
-710 locate 4,16
-720 print "Girando...";
-730 zl=9
-740 gosub 1140
-750 zj=zi
-760 zl=19
-770 gosub 1140
-780 zh=zi
-790 zl=29
-800 gosub 1140
-810 if zj=zh and zj=zi then 1030
-820 zg=-zk
-830 zf$="Nao foi desta vez. Tente de novo!"
-840 color 8,1,1
-850 play "t160o4v9l8gec4","t160o3v6l4cr4"
-860 zm=zm+zg
-870 locate 4,13
-880 print space$(32);
-890 locate 4,13
-900 print "Aposta :";zk
-910 locate 4,14
-920 print "Resultado :";zg
-930 locate 4,16
-940 print zf$;
-950 locate 4,18
-960 print space$(32);
-970 locate 4,18
-980 print "Saldo atualizado :";zm
-990 locate 4,20
-1000 print "Pressione uma tecla"
-1010 zn$=input$(1)
-1020 goto 520
-1030 zg=zk*50
-1040 zf$="Tres iguais! Voce ganhou!"
-1050 color 3,1,1
-1060 if zj=7 then 1090
-1070 play "t200o5v12l8cego6c4","t200o4v8l4ceg2","t200o3v6l4cgr2"
-1080 goto 860
-1090 zg=zk*500
-1100 zf$="Sete, sete, sete! Premio maximo!"
-1110 color 10,4,4
-1120 play "t220o5v13l16cego6cego5c4","t220o4v9l8cego5c4","t220o3v8l8cgcg4"
-1130 goto 860
-1140 for ze=1 to 8
-1150 zi=int(rnd(1)*9+1)
-1160 locate zl,8
-1170 print chr$(48+zi);
-1180 play "t255o5v8l64c"
-1190 next ze
-1200 play "t255o6v10l32g"
-1210 return
-1220 color 11,1,1
-1230 gosub 1330
-1240 locate 8,7
-1250 print "Obrigado por jogar!"
-1260 locate 4,10
-1270 print "Voce tem :";zm
-1280 locate 8,14
-1290 print "Ate a proxima rodada!"
-1300 play "t160o5v10l8gec4","t160o3v7l4gc2"
-1310 key on
-1320 end
-1330 cls
-1340 locate 1,1
-1350 print zu$;zq$;zt$;
-1360 for zd=2 to 21
-1370 locate 1,zd
-1380 print zw$;
-1390 locate 38,zd
-1400 print zw$;
-1410 next zd
-1420 locate 1,22
-1430 print zs$;zq$;zr$;
-1440 locate 14,3
-1450 print "Cassino MSX";
-1460 return
+40 dim zz(3),zy(3)
+50 goto 1080
+60 em=1
+70 goto 90
+80 em=0
+90 if ec<>int(ec)or el<>int(el)or et<>int(et)then error 5
+100 if ec<0 or el<0 or el>23 or et<1 then error 5
+110 if ec+et>=peek(&hf3b0)then error 5
+120 if em and et>14 then error 5
+130 es$=""
+140 zx=0
+150 zw=0
+160 locate ec,el,0
+170 print es$;space$(et-len(es$));
+180 gosub 420
+190 zv$=inkey$
+200 if zv$="" then 190
+210 zu=asc(zv$)
+220 if zu=13 then 630
+230 if zu=29 then 370
+240 if zu=28 then 390
+250 if zu=18 then zw=1-zw:goto 190
+260 if zu=8 then 460
+270 if zu=127 then 480
+280 if zu<32 then 190
+290 if em and zv$="," then zv$="."
+300 zt$=left$(es$,zx)+zv$
+310 if zw then zt$=zt$+mid$(es$,zx+1)else zt$=zt$+mid$(es$,zx+2)
+320 if len(zt$)>et then beep:goto 190
+330 if em then gosub 510:if zs=0 then beep:goto 190
+340 es$=zt$
+350 if zx<et then zx=zx+1
+360 goto 160
+370 if zx>0 then zx=zx-1
+380 goto 400
+390 if zx<len(es$)then zx=zx+1
+400 gosub 420
+410 goto 190
+420 zr=zx
+430 if zr=et then zr=et-1
+440 locate ec+zr,el,1
+450 return
+460 if zx=0 then 190
+470 zx=zx-1
+480 if zx>=len(es$)then 190
+490 es$=left$(es$,zx)+mid$(es$,zx+2)
+500 goto 160
+510 zs=0
+520 zq=0
+530 for zp=1 to len(zt$)
+540 zo$=mid$(zt$,zp,1)
+550 if zo$>="0" and zo$<="9" then 600
+560 if zp=1 and(zo$="+" or zo$="-")then 600
+570 if zo$<>"." then return
+580 zq=zq+1
+590 if zq>1 then return
+600 next zp
+610 zs=1
+620 return
+630 if em=0 then 730
+640 zt$=es$
+650 gosub 510
+660 if zs=0 then beep:goto 190
+670 for zp=1 to len(es$)
+680 zo$=mid$(es$,zp,1)
+690 if zo$>="0" and zo$<="9" then 730
+700 next zp
+710 beep
+720 goto 190
+730 locate ec+zr,el,0
+740 if em then ev#=val(es$)
+750 return
+760 pm=0
+770 jp=0
+780 mp$="Sem premio. Tente de novo!"
+790 zn=0
+800 zm=0
+810 zl=0
+820 zk=1
+830 zj=0
+840 zi=1
+850 for zh=1 to 3
+860 if zh=1 then zg=ra else if zh=2 then zg=rb else zg=rc
+870 if zg<>int(zg)or zg<1 or zg>9 then error 5
+880 if zg=1 then zn=zn+1
+890 if zg=7 then zl=zl+1
+900 if zg=9 then zm=zm+1
+910 if(zg<4 or zg>6)and zg<>9 then zk=0
+920 if zg<>9 and zj=0 then zj=zg
+930 if zg<>9 and zg<>zj then zi=0
+940 next zh
+950 if zl=3 then pm=40:jp=1:mp$="Tres setes! Premio maximo!":return
+960 if zm=3 then pm=10:mp$="Tres naves!":return
+970 if zl=2 and zm=1 then pm=10:mp$="Dois setes e uma nave!":return
+980 if zi=0 then 1030
+990 pm=3
+1000 mp$="Tres iguais!"
+1010 if zj=1 then pm=10:mp$="Tres cerejas!"
+1020 if zm>0 then pm=pm*2:mp$="Trinca com curinga!"
+1030 if zk and pm<2 then pm=2:mp$="Joias misturadas!"
+1040 if zn=2 and pm<3 then pm=3:mp$="Duas cerejas!"
+1050 if zn=3 and pm<10 then pm=10:mp$="Tres cerejas!"
+1060 if ra=1 and pm<1 then pm=1:mp$="Cereja: aposta devolvida!"
+1070 return
+1080 screen 1
+1090 width 32
+1100 key off
+1110 color 11,1,1
+1120 gosub 3700
+1130 gosub 3830
+1140 zf=0
+1150 ze=0
+1160 for zd=1 to 3
+1170 zz(zd)=0
+1180 zy(zd)=0
+1190 next zd
+1200 zc=rnd(-time)
+1210 for zd=1 to zc
+1220 zb=rnd(1)
+1230 next
+1240 rem -- Molduras duplas: prefixo chr$(1), codigos 86 a 91.
+1250 za$=chr$(1)+chr$(86)
+1260 yz$=chr$(1)+chr$(87)
+1270 yy$=chr$(1)+chr$(88)
+1280 yx$=chr$(1)+chr$(89)
+1290 yw$=chr$(1)+chr$(90)
+1300 yv$=chr$(1)+chr$(91)
+1310 yu$=""
+1320 for zd=1 to 28
+1330 yu$=yu$+yz$
+1340 next
+1350 yt$=yy$
+1360 ys$=yw$
+1370 for zd=1 to 5
+1380 yt$=yt$+yz$
+1390 ys$=ys$+yz$
+1400 next
+1410 yt$=yt$+yx$
+1420 ys$=ys$+yv$
+1430 gosub 3560
+1440 locate 3,5
+1450 print "Aposta paga a cada giro."
+1460 locate 3,6
+1470 print "Premios incluem a aposta."
+1480 locate 3,8
+1490 print chr$(129);" no rolo 1: 1x"
+1500 locate 3,9
+1510 print "Duas ";chr$(129);": 3x; tres: 10x"
+1520 locate 3,11
+1530 print "Tres iguais: 3x"
+1540 locate 3,12
+1550 print "Tres setes: 40x"
+1560 locate 3,13
+1570 print "Joias ";chr$(132);chr$(133);chr$(134);" mistas: 2x"
+1580 locate 3,14
+1590 print "Nave ";chr$(137);" substitui simbolos."
+1600 locate 3,15
+1610 print "Dobra as trincas comuns."
+1620 locate 3,16
+1630 print "Dois 7 + ";chr$(137);": 10x"
+1640 locate 3,17
+1650 print "Tres ";chr$(137);": 10x"
+1660 locate 3,19
+1670 print "Vale o maior premio."
+1680 locate 3,20
+1690 print "Tecla: controles";
+1700 play "t180o5v10l8cego6c4","t180o3v7l4cge2"
+1710 yr$=input$(1)
+1720 gosub 3560
+1730 locate 3,5
+1740 print "Hold apos perder: 1/12"
+1750 locate 3,7
+1760 print "1/2/3: trava ate 2 rolos."
+1770 locate 3,8
+1780 print "ENTER: confirma Hold."
+1790 locate 3,9
+1800 print "Mesma aposta; giro pago."
+1810 locate 3,11
+1820 print "Sem ofertas consecutivas."
+1830 locate 3,13
+1840 print "Dobro ou nada: S/N."
+1850 locate 3,14
+1860 print "1=Cara, 2=Coroa; 50%."
+1870 locate 3,15
+1880 print "Uma tentativa por premio."
+1890 locate 3,17
+1900 print "Zero/acima do saldo: sair."
+1910 locate 3,20
+1920 print "Pressione uma tecla";
+1930 yr$=input$(1)
+1940 color 15,1,1
+1950 gosub 3700
+1960 gosub 3560
+1970 locate 3,8
+1980 print "Saldo: ";
+1990 ec=10
+2000 el=8
+2010 et=14
+2020 gosub 60
+2030 if ev#<0 then beep:goto 2020
+2040 yq=ev#
+2050 color 10,1,1
+2060 gosub 3700
+2070 gosub 3560
+2080 for zd=1 to 3
+2090 yp=3+(zd-1)*9
+2100 locate yp,7
+2110 print yt$;
+2120 locate yp,8
+2130 print za$;"     ";za$;
+2140 locate yp,9
+2150 print ys$;
+2160 if zz(zd)>0 then locate yp+3,8:print chr$(128+zz(zd));
+2170 next zd
+2180 locate 3,11
+2190 print "Saldo :";yq
+2200 locate 3,18
+2210 if zf then print "Hold: mesma aposta, pago" else print "Aposte zero para encerrar"
+2220 locate 3,13
+2230 print "Sua aposta: ";
+2240 ec=15
+2250 el=13
+2260 et=14
+2270 gosub 60
+2280 if ev#<0 then beep:goto 2270
+2290 yo=ev#
+2300 if yo=0 or yo>yq then 3340
+2310 yn=zf
+2320 zf=0
+2330 ym=0
+2340 for zd=1 to 3
+2350 zy(zd)=0
+2360 next zd
+2370 if yn and yo=ze then gosub 2880
+2380 if yn and yo<>ze then locate 3,18:print "Hold cancelado: nova aposta";:beep
+2390 yq=yq-yo
+2400 color 11,1,1
+2410 gosub 3700
+2420 locate 3,16
+2430 print space$(26);
+2440 locate 3,16
+2450 print "Girando...";
+2460 for zd=1 to 3
+2470 if zy(zd)=0 then yp=6+(zd-1)*9:gosub 3260:zz(zd)=yl
+2480 next zd
+2490 ra=zz(1)
+2500 rb=zz(2)
+2510 rc=zz(3)
+2520 gosub 760
+2530 yk=yo*pm
+2540 yj$=mp$
+2550 if pm>0 then gosub 3050
+2560 yi=yk-yo
+2570 if yk=0 then color 8,1,1 else if jp then color 10,4,4 else color 3,1,1
+2580 gosub 3700
+2590 if yk=0 then play "t160o4v9l8gec4","t160o3v6l4cr4" else play "t200o5v12l8cego6c4","t200o4v8l4ceg2"
+2600 yq=yq+yk
+2610 ze=yo
+2620 if pm=0 and yn=0 and yq>0 then if int(rnd(1)*12)=0 then zf=1
+2630 locate 3,13
+2640 print space$(26);
+2650 locate 3,13
+2660 print "Aposta :";yo
+2670 locate 3,14
+2680 print space$(26);
+2690 locate 3,14
+2700 print "Premio:";yk
+2710 locate 3,15
+2720 print "Resultado:";yi
+2730 locate 3,16
+2740 print space$(26);
+2750 locate 3,16
+2760 print yj$;
+2770 locate 3,18
+2780 print space$(26);
+2790 locate 3,18
+2800 print "Saldo: ";yq
+2810 locate 3,19
+2820 print space$(26);
+2830 if zf then locate 3,19:print "Hold: mantenha a aposta";
+2840 locate 3,20
+2850 print "Pressione uma tecla";
+2860 yr$=input$(1)
+2870 goto 2050
+2880 locate 3,16
+2890 print "1/2/3: trava; ENTER gira";
+2900 locate 3,18
+2910 print space$(26);
+2920 locate 3,18
+2930 print "Max. 2 rolos; giro pago";
+2940 yr$=inkey$
+2950 if yr$="" then 2940
+2960 if yr$=chr$(13)then return
+2970 if yr$<"1" or yr$>"3" then beep:goto 2940
+2980 yh=asc(yr$)-48
+2990 if zy(yh)=0 and ym=2 then beep:goto 2940
+3000 zy(yh)=1-zy(yh)
+3010 ym=ym+zy(yh)*2-1
+3020 locate 3+(yh-1)*9,10
+3030 if zy(yh)then print " TRAVA ";else print "       ";
+3040 goto 2940
+3050 locate 3,14
+3060 print "Premio:";yk
+3070 locate 3,16
+3080 print yj$;
+3090 locate 3,18
+3100 print space$(26);
+3110 locate 3,18
+3120 print "Dobro ou nada? (S/N)";
+3130 yr$=inkey$
+3140 if yr$="" then 3130
+3150 if yr$="n" or yr$="N" then return
+3160 if yr$<>"s" and yr$<>"S" then beep:goto 3130
+3170 locate 3,19
+3180 print "1=Cara / 2=Coroa";
+3190 yr$=inkey$
+3200 if yr$="" then 3190
+3210 if yr$<>"1" and yr$<>"2" then beep:goto 3190
+3220 yg=asc(yr$)-49
+3230 yf=int(rnd(1)*2)
+3240 if yg=yf then yk=yk*2:yj$="Acertou! Premio dobrado!" else yk=0:yj$="Errou! Perdeu o premio."
+3250 return
+3260 for ye=1 to 8
+3270 yl=int(rnd(1)*9+1)
+3280 locate yp,8
+3290 print chr$(128+yl);
+3300 play "t255o5v8l64c"
+3310 next ye
+3320 play "t255o6v10l32g"
+3330 return
+3340 color 11,1,1
+3350 gosub 3700
+3360 gosub 3560
+3370 locate 7,7
+3380 print "Obrigado por jogar!"
+3390 locate 3,10
+3400 print "Voce tem :";yq
+3410 locate 3,14
+3420 print "Jogar novamente? (S/N)";
+3430 play "t160o5v10l8gec4","t160o3v7l4gc2"
+3440 yr$=inkey$
+3450 if yr$="" then 3440
+3460 if yr$="s" or yr$="S" then 1080
+3470 if yr$="n" or yr$="N" then 3500
+3480 beep
+3490 goto 3440
+3500 screen 0
+3510 width 40
+3520 color 15,1,1
+3530 key off
+3540 cls
+3550 end
+3560 cls
+3570 locate 1,1
+3580 print yy$;yu$;yx$;
+3590 for yd=2 to 21
+3600 locate 1,yd
+3610 print za$;
+3620 locate 30,yd
+3630 print za$;
+3640 next yd
+3650 locate 1,22
+3660 print yw$;yu$;yv$;
+3670 locate 11,3
+3680 print "Cassino MSX";
+3690 return
+3700 yc=base(6)
+3710 yb=peek(&hf3ea)
+3720 vpoke yc+2,7*16+yb
+3730 vpoke yc+3,7*16+yb
+3740 for ya=4 to 15
+3750 vpoke yc+ya,15*16+yb
+3760 next ya
+3770 for ya=6 to 7
+3780 vpoke yc+ya,10*16+yb
+3790 next ya
+3800 vpoke yc+16,&h34
+3810 vpoke yc+17,&h34
+3820 return
+3830 restore 3970
+3840 for xz=22 to 27
+3850 gosub 3920
+3860 next xz
+3870 restore 4090
+3880 for xz=128 to 137
+3890 gosub 3920
+3900 next xz
+3910 return
+3920 for xy=0 to 7
+3930 read xx
+3940 vpoke base(7)+xz*8+xy,xx
+3950 next xy
+3960 return
+3970 rem -- 22: Vertical dupla.
+3980 data &b00100100,&b00100100,&b00100100,&b00100100,&b00100100,&b00100100,&b00100100,&b00100100
+3990 rem -- 23: Horizontal dupla.
+4000 data &b00000000,&b00000000,&b11111111,&b00000000,&b00000000,&b11111111,&b00000000,&b00000000
+4010 rem -- 24: Canto superior esquerdo.
+4020 data &b00000000,&b00000000,&b00111111,&b00100000,&b00100000,&b00100111,&b00100100,&b00100100
+4030 rem -- 25: Canto superior direito.
+4040 data &b00000000,&b00000000,&b11111100,&b00000100,&b00000100,&b11100100,&b00100100,&b00100100
+4050 rem -- 26: Canto inferior esquerdo.
+4060 data &b00100100,&b00100100,&b00100111,&b00100000,&b00100000,&b00111111,&b00000000,&b00000000
+4070 rem -- 27: Canto inferior direito.
+4080 data &b00100100,&b00100100,&b11100100,&b00000100,&b00000100,&b11111100,&b00000000,&b00000000
+4090 rem -- 128: Moeda (reservada).
+4100 data &b00111100,&b01000010,&b10011001,&b10100101,&b10100101,&b10011001,&b01000010,&b00111100
+4110 rem -- 129: Cerejas.
+4120 data &b00001100,&b00011000,&b00101000,&b01000100,&b11101110,&b11101110,&b01000100,&b00000000
+4130 rem -- 130: Limao.
+4140 data &b00000000,&b00111100,&b01111110,&b11111111,&b11111111,&b01111110,&b00111100,&b00000000
+4150 rem -- 131: Sino.
+4160 data &b00011000,&b00111100,&b00111100,&b00111100,&b01111110,&b01111110,&b11111111,&b00011000
+4170 rem -- 132: Diamante.
+4180 data &b00000000,&b00111100,&b01111110,&b11111111,&b01111110,&b00111100,&b00011000,&b00000000
+4190 rem -- 133: Estrela.
+4200 data &b00011000,&b00011000,&b11111111,&b01111110,&b00111100,&b01111110,&b01100110,&b01000010
+4210 rem -- 134: Coracao.
+4220 data &b00000000,&b01100110,&b11111111,&b11111111,&b01111110,&b00111100,&b00011000,&b00000000
+4230 rem -- 135: Sete (premio maximo).
+4240 data &b00000000,&b01111110,&b00000110,&b00001100,&b00011000,&b00110000,&b00110000,&b00000000
+4250 rem -- 136: Carro.
+4260 data &b00000000,&b00111100,&b01000010,&b11111111,&b11111111,&b01100110,&b01100110,&b00000000
+4270 rem -- 137: Nave.
+4280 data &b00011000,&b00111100,&b00111100,&b01111110,&b11111111,&b11011011,&b00011000,&b00100100

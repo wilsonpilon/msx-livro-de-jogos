@@ -1,1 +1,4 @@
 /resources/*
+/tests/*.amx
+/tests/*.bmx
+/tests/*.log

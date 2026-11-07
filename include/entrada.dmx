@@ -1,0 +1,93 @@
+## Interface compartilhada entre namespaces: ec, el, et, em, es$ e ev#.
+{entrada_editar}
+    if ec <> int(ec) or el <> int(el) or et <> int(et) then error 5
+    if ec < 0 or el < 0 or el > 23 or et < 1 then error 5
+    ## Reserva a ultima coluna para nunca provocar quebra de linha.
+    if ec + et >= peek(&hf3b0) then error 5
+    if em and et > 14 then error 5
+    es$ = ""
+    entrada_posicao = 0
+    entrada_inserir = 0
+
+{entrada_desenhar}
+    locate ec, el, 0
+    print es$; space$(et - len(es$));
+    gosub {entrada_posicionar}
+
+{entrada_tecla}
+    entrada_tecla$ = inkey$
+    if entrada_tecla$ = "" then {entrada_tecla}
+    entrada_codigo = asc(entrada_tecla$)
+    if entrada_codigo = 13 then {entrada_confirmar}
+    if entrada_codigo = 29 then {entrada_esquerda}
+    if entrada_codigo = 28 then {entrada_direita}
+    if entrada_codigo = 18 then entrada_inserir = 1 - entrada_inserir: goto {entrada_tecla}
+    if entrada_codigo = 8 then {entrada_apagar_anterior}
+    if entrada_codigo = 127 then {entrada_apagar}
+    if entrada_codigo < 32 then {entrada_tecla}
+    if em and entrada_tecla$ = "," then entrada_tecla$ = "."
+    entrada_candidato$ = left$(es$, entrada_posicao) + entrada_tecla$
+    if entrada_inserir then entrada_candidato$ = entrada_candidato$ + mid$(es$, entrada_posicao + 1) else entrada_candidato$ = entrada_candidato$ + mid$(es$, entrada_posicao + 2)
+    if len(entrada_candidato$) > et then beep: goto {entrada_tecla}
+    if em then gosub {entrada_validar}: if entrada_valida = 0 then beep: goto {entrada_tecla}
+    es$ = entrada_candidato$
+    if entrada_posicao < et then entrada_posicao = entrada_posicao + 1
+    goto {entrada_desenhar}
+
+{entrada_esquerda}
+    if entrada_posicao > 0 then entrada_posicao = entrada_posicao - 1
+    goto {entrada_cursor}
+
+{entrada_direita}
+    if entrada_posicao < len(es$) then entrada_posicao = entrada_posicao + 1
+
+{entrada_cursor}
+    gosub {entrada_posicionar}
+    goto {entrada_tecla}
+
+{entrada_posicionar}
+    entrada_cursor = entrada_posicao
+    if entrada_cursor = et then entrada_cursor = et - 1
+    locate ec + entrada_cursor, el, 1
+    return
+
+{entrada_apagar_anterior}
+    if entrada_posicao = 0 then {entrada_tecla}
+    entrada_posicao = entrada_posicao - 1
+
+{entrada_apagar}
+    if entrada_posicao >= len(es$) then {entrada_tecla}
+    es$ = left$(es$, entrada_posicao) + mid$(es$, entrada_posicao + 2)
+    goto {entrada_desenhar}
+
+{entrada_validar}
+    entrada_valida = 0
+    entrada_pontos = 0
+    for entrada_indice = 1 to len(entrada_candidato$)
+        entrada_caractere$ = mid$(entrada_candidato$, entrada_indice, 1)
+        if entrada_caractere$ >= "0" and entrada_caractere$ <= "9" then {entrada_proximo}
+        if entrada_indice = 1 and (entrada_caractere$ = "+" or entrada_caractere$ = "-") then {entrada_proximo}
+        if entrada_caractere$ <> "." then return
+        entrada_pontos = entrada_pontos + 1
+        if entrada_pontos > 1 then return
+{entrada_proximo}
+    next entrada_indice
+    entrada_valida = 1
+    return
+
+{entrada_confirmar}
+    if em = 0 then {entrada_retornar}
+    entrada_candidato$ = es$
+    gosub {entrada_validar}
+    if entrada_valida = 0 then beep: goto {entrada_tecla}
+    for entrada_indice = 1 to len(es$)
+        entrada_caractere$ = mid$(es$, entrada_indice, 1)
+        if entrada_caractere$ >= "0" and entrada_caractere$ <= "9" then {entrada_retornar}
+    next entrada_indice
+    beep
+    goto {entrada_tecla}
+
+{entrada_retornar}
+    locate ec + entrada_cursor, el, 0
+    if em then ev# = val(es$)
+    return
