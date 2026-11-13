@@ -33,7 +33,7 @@ Boa sorte!
 ## Parte I: JOGOS PARA APRENDER E CRIAR
 
 - [CASSINO](cassino.md)
-- [BATALHA NAVAL](batalha-naval.md)
+- [BATALHA NAVAL](batalha.md)
 - [GORKS](gorks.md)
 - [VINTE E UM](vinte-e-um.md)
 - [ROLETA](roleta.md)

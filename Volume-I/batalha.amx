@@ -1,0 +1,42 @@
+10 'Converted with Basic Dignified
+20 'https://github.com/farique1/basic-dignified
+30 rem -- BATALHA NAVAL
+40 screen 0
+50 zz=rnd(-time)
+60 for zy=1 to zz
+70 zx=rnd(1)
+80 next zy
+90 gosub 370
+100 zw=1
+110 zv=int(rnd(1)*10)
+120 zu=int(rnd(1)*10)
+130 locate 3*zv+3,2*zu+1
+140 print "*"
+150 locate 0,20
+160 print
+170 locate 0,20
+180 print "COOR. HOR.";:zt$=input$(1):zt=val(zt$):print zt
+190 locate 18,20
+200 print "COOR. VER.";:zs$=input$(1):zs=val(zs$):print zs
+210 locate 3*zt+3,2*zs+1
+220 print zw
+230 zr=int(sqr((zv-zt)*(zv-zt)+(zu-zs)*(zu-zs)))
+240 if zr=0 then goto 330
+250 zw=zw+1
+260 if zr=1 then goto 300
+270 locate 0,21
+280 print "DISTANCIA  :";zr;"  ";
+290 goto 150
+300 locate 0,21
+310 print "TCHIBUM!","  "
+320 goto 150
+330 cls
+340 print "ACERTOU COM";zw;" DISPAROS"
+350 play "CDE"
+360 end
+370 print "   0  1  2  3  4  5  6  7  8  9"
+380 for zq=0 to 9
+390 print zq;".  .  .  .  .  .  .  .  .  ."
+400 print
+410 next zq
+420 return

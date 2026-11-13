@@ -1,0 +1,51 @@
+rem -- BATALHA NAVAL
+
+{inicializar}
+screen 0
+semente_aleatoria = rnd(-time)
+for descarte_aleatorio = 1 to semente_aleatoria
+    numero_aleatorio = rnd(1)
+next descarte_aleatorio
+
+gosub {desenhar_tabuleiro}
+disparos = 1
+alvo_horizontal = int(rnd(1) * 10)
+alvo_vertical = int(rnd(1) * 10)
+locate 3 * alvo_horizontal + 3, 2 * alvo_vertical + 1
+print "*"
+
+{novo_disparo}
+locate 0, 20
+print
+locate 0, 20
+print "COOR. HOR.";: coordenada_horizontal$ = input$(1): coordenada_horizontal = val(coordenada_horizontal$): print coordenada_horizontal
+locate 18, 20
+print "COOR. VER.";: coordenada_vertical$ = input$(1): coordenada_vertical = val(coordenada_vertical$): print coordenada_vertical
+locate 3 * coordenada_horizontal + 3, 2 * coordenada_vertical + 1
+print disparos
+distancia = int(sqr((alvo_horizontal - coordenada_horizontal) * (alvo_horizontal - coordenada_horizontal) + (alvo_vertical - coordenada_vertical) * (alvo_vertical - coordenada_vertical)))
+if distancia = 0 then goto {acertou}
+disparos = disparos + 1
+if distancia = 1 then goto {quase_acertou}
+locate 0, 21
+print "DISTANCIA  :"; distancia; "  ";
+goto {novo_disparo}
+
+{quase_acertou}
+locate 0, 21
+print "TCHIBUM!", "  "
+goto {novo_disparo}
+
+{acertou}
+cls
+print "ACERTOU COM"; disparos; " DISPAROS"
+play "CDE"
+end
+
+{desenhar_tabuleiro}
+print "   0  1  2  3  4  5  6  7  8  9"
+for linha = 0 to 9
+    print linha; ".  .  .  .  .  .  .  .  .  ."
+    print
+next linha
+return
